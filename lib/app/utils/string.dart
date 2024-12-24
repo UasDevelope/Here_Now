@@ -1,0 +1,22 @@
+class AppString{
+  static  String get signup=>"Sign Up";
+  static  String get username=>"Username";
+  static  String get firstname=>"First  Name";
+  static  String get lastname=>"Last Name";
+  static  String get email=>"Email";
+  static  String get password=>"Password";
+  static  String get alreadyHaveAndAccount=>"Already have accounnt?";
+  static  String get register=>"Register";
+  static  String get login=>"Log In";
+  static String get enterYourEmail=>"Enter your email";
+  static String get enterYourPassword=>"Enter your password";
+  static String get dontHaveAnAccount=>"Don't have accounnt?";
+  static String get interactions=>"Interactions";
+  static String get createnewpost=>'Create new post';
+  static String get addpicturevides=>'Add Picture / Video';
+  static String get typesomething=>'Type something here..';
+  static String get postnow=>'Post Now';
+  static String get settings=>'Settings';
+  static String get logout=>'Logout';
+
+}
