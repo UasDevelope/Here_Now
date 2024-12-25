@@ -8,4 +8,9 @@ class EventsController extends GetxController {
     target: LatLng(51.5072, 0.1276), // Initial target LatLng
     zoom: 8.0, // You can set a default zoom value
   ).obs;
+
+  RxDouble rated = RxDouble(0);
+  void changeRating(double rating) {
+    rated.value = rating;
+  }
 }

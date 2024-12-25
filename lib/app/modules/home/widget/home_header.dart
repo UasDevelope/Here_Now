@@ -14,7 +14,7 @@ class HomeHeader extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 50),
         child: Row(
-          spacing: 10,
+          spacing: 20,
           children: [
             Image.asset(
               Images.logo,
@@ -27,7 +27,7 @@ class HomeHeader extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.porofile);
+                Get.toNamed(Routes.profile);
               },
               child: Image.asset(
                 Images.setting,

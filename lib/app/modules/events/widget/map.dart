@@ -4,13 +4,15 @@ import 'package:here_now/app/modules/events/widget/button.dart';
 import '../../../utils/widgets.dart';
 
 class EventsGoogleMap extends StatelessWidget {
+  bool? showAdditional = false;
+  EventsGoogleMap({this.showAdditional});
   @override
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
     return Column(
       children: [
         Container(
-          padding:EdgeInsets.zero,
+          padding: EdgeInsets.zero,
           height: 200,
           decoration: BoxDecoration(
             borderRadius:
@@ -18,13 +20,14 @@ class EventsGoogleMap extends StatelessWidget {
           ),
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.only(bottom:0),
+              padding: const EdgeInsets.only(bottom: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Obx(() => GoogleMap(
+                          mapType: MapType.terrain,
                           initialCameraPosition:
                               controller.cameraPosition.value,
                           onMapCreated: (value) {
@@ -55,43 +58,48 @@ class EventsGoogleMap extends StatelessWidget {
             ),
           ),
         ),
-        Row(
-          children: [
-            EventButton(
-              imagePath: Images.phone, // Optional: Add image path here
-              text: '+92 232 8686 868', // Optional: Add button text here
-              onPressed: () {
-                print("Button Pressed");
-              },
-              height: 60.0,
-              width: Get.width / 2.2,
-              shadowColor: Colors.grey.withOpacity(0.6),
-              buttonColor: Colors.white,
-            ),
-            EventButton(
-              imagePath: Images.money,
-              text: '\$399',
-              onPressed: () {
-                print("Button Pressed");
-              },
-              height: 50.0,
-              width: Get.width / 2.2,
-              shadowColor: Colors.grey.withOpacity(0.6),
-              buttonColor: Colors.white,
-            )
-          ],
-        ),
-        EventButton(
-          imagePath: Images.rating,
-          text: 'Add your Rating',
-          onPressed: () {
-            print("Button Pressed");
-          },
-          height: 50.0,
-          width: Get.width,
-          shadowColor: Colors.grey.withOpacity(0.6),
-          buttonColor: Colors.white,
-        )
+        if (showAdditional == true)
+          Row(
+            children: [
+              EventButton(
+                imagePath: Images.phone, // Optional: Add image path here
+                text: '+92 232 8686 868', // Optional: Add button text here
+                onPressed: () {
+                  print("Button Pressed");
+                },
+                height: 60.0,
+                width: Get.width / 2.2,
+                shadowColor: Colors.grey.withOpacity(0.6),
+                buttonColor: Colors.white,
+              ),
+              EventButton(
+                imagePath: Images.money,
+                text: '\$399',
+                onPressed: () {
+                  print("Button Pressed");
+                },
+                height: 50.0,
+                width: Get.width / 2.2,
+                shadowColor: Colors.grey.withOpacity(0.6),
+                buttonColor: Colors.white,
+              )
+            ],
+          ),
+        if (showAdditional == true)
+          EventButton(
+            imagePath: Images.rating,
+            text: 'Add your Rating',
+            onPressed: () {
+              showRatingDialog(
+                controller.rated, // Pass the reactive rating
+                controller.changeRating, // Pass the callback for rating update
+              );
+            },
+            height: 50.0,
+            width: Get.width,
+            shadowColor: Colors.grey.withOpacity(0.6),
+            buttonColor: Colors.white,
+          )
       ],
     );
   }

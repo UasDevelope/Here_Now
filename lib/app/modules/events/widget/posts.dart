@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:here_now/app/modules/events/controller/Events.dart';
 
 import '../../../utils/widgets.dart';
 import 'button.dart';
@@ -10,6 +11,7 @@ class EventPosts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EventsController controller = ControllerLocator.eventsController;
     return Container(
       padding: EdgeInsets.all(8), // Add some padding for better UI
       child: SingleChildScrollView(
@@ -92,24 +94,29 @@ class EventPosts extends StatelessWidget {
                     ],
                   ),
                 ),
-                if(showMap)
-                EventsGoogleMap(),
+                if (showMap) EventsGoogleMap(
+                  showAdditional:true,
+                ),
               ],
             ),
-            if(!showMap)
-            Center(
-              child: EventButton(
-                imagePath: Images.rating,
-                text: 'Add your Rating',
-                onPressed: () {
-                  print("Button Pressed");
-                },
-                height: 50.0,
-                width: Get.width/2,
-                shadowColor: Colors.grey.withOpacity(0.6),
-                buttonColor: Colors.white,
+            if (!showMap)
+              Center(
+                child: EventButton(
+                  imagePath: Images.rating,
+                  text: 'Add your Rating',
+                  onPressed: () {
+                    showRatingDialog(
+                      controller.rated, // Pass the reactive rating
+                      controller
+                          .changeRating, // Pass the callback for rating update
+                    );
+                  },
+                  height: 50.0,
+                  width: Get.width / 2,
+                  shadowColor: Colors.grey.withOpacity(0.6),
+                  buttonColor: Colors.white,
+                ),
               ),
-            ),
             Row(
               children: [
                 Text(

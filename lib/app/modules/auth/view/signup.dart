@@ -17,19 +17,24 @@ class SignupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 50,
+                height: Get.height * 0.1,
               ),
+              // Center(
+              //     child: Image.asset(
+              //   Images.signup,
+              //   height: Get.height / 3,
+              //   width: Get.width,
+              //   fit: BoxFit.cover,
+              // )),
               Center(
-                  child: Image.asset(
-                Images.signup,
-                height: Get.height / 3,
-                width: Get.width,
-                fit: BoxFit.cover,
-              )),
-              Text(
-                AppString.signup,
-                style: AppStyle.openSans(
-                    fontSize: 30, fontWeight: FontWeight.w800),
+                child: Text(
+                  AppString.signup,
+                  style: AppStyle.openSans(
+                      fontSize: 30, fontWeight: FontWeight.w800),
+                ),
+              ),
+              SizedBox(
+                height: Get.height * 0.1,
               ),
               Text(
                 AppString.username,
@@ -102,6 +107,26 @@ class SignupScreen extends StatelessWidget {
                 borderColor: AppColors.textfieldborder,
                 borderRadius: 10.0,
               ),
+              SizedBox(
+                height: Get.height * 0.1,
+              ),
+              Center(
+                child: AppButton(
+                  height: 50,
+                  textWeight: FontWeight.w800,
+                  textSize: 20,
+                  width: Get.width / 1.2,
+                  text: AppString.register,
+                  textColor: AppColors.white,
+                  borderRadius: 10,
+                  onTap: () {
+                    Get.toNamed(Routes.bottomNav);
+                  },
+                ),
+              ),
+              SizedBox(
+                height: Get.height * 0.01,
+              ),
               Row(
                 spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,23 +152,6 @@ class SignupScreen extends StatelessWidget {
                   )
                 ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                child: AppButton(
-                  height: 50,
-                  textWeight: FontWeight.w800,
-                  textSize: 20,
-                  width: Get.width / 1.2,
-                  text: AppString.register,
-                  textColor: AppColors.white,
-                  borderRadius: 10,
-                  onTap: () {
-                    Get.toNamed(Routes.bottomNav);
-                  },
-                ),
-              )
             ],
           ),
         ),

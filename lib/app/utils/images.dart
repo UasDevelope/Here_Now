@@ -19,8 +19,10 @@ class Images {
   static String get share => 'share'.png;
   static String get addimage => 'addimage'.png;
   static String get mail => 'mail'.png;
-  static String get edit=>'edit'.png;
-  static String get logout=>'logout'.png;
+  static String get edit => 'edit'.png;
+  static String get logout => 'logout'.png;
+  static String get security => 'security'.png;
+  static String get fqa => 'fqa'.png;
 }
 
 extension on String {

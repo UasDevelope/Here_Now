@@ -7,7 +7,8 @@ class Posts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8), // Add some padding for better UI
+      padding: EdgeInsets.only(
+          left: 8, right: 8, top: 8), // Add some padding for better UI
       child: SingleChildScrollView(
         child: Column(
           spacing: 4,
@@ -54,7 +55,7 @@ class Posts extends StatelessWidget {
               height: 3,
             ),
             Container(
-              height: Get.height / 5,
+              height: Get.height / 6,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
                   7,
