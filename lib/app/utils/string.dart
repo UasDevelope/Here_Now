@@ -11,7 +11,7 @@ class AppString {
   static String get enterYourEmail => "Enter your email";
   static String get enterYourPassword => "Enter your password";
   static String get dontHaveAnAccount => "Don't have accounnt?";
-  static String get interactions => "Interactions";
+  static String get comment => "Comments";
   static String get createnewpost => 'Create new post';
   static String get addpicturevides => 'Add Picture / Video';
   static String get typesomething => 'Type something here..';

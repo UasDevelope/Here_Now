@@ -17,24 +17,21 @@ class SignupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: Get.height * 0.1,
+                height: Get.height * 0.09,
               ),
-              // Center(
-              //     child: Image.asset(
-              //   Images.signup,
-              //   height: Get.height / 3,
-              //   width: Get.width,
-              //   fit: BoxFit.cover,
-              // )),
               Center(
-                child: Text(
-                  AppString.signup,
-                  style: AppStyle.openSans(
-                      fontSize: 30, fontWeight: FontWeight.w800),
+                child: CircleAvatar(
+                  radius: 100,
+                  backgroundImage: AssetImage("assets/images/herenow.jpg"),
                 ),
               ),
+              Text(
+                AppString.signup,
+                style: AppStyle.openSans(
+                    fontSize: 30, fontWeight: FontWeight.w800),
+              ),
               SizedBox(
-                height: Get.height * 0.1,
+                height: Get.height * 0.01,
               ),
               Text(
                 AppString.username,
@@ -108,7 +105,7 @@ class SignupScreen extends StatelessWidget {
                 borderRadius: 10.0,
               ),
               SizedBox(
-                height: Get.height * 0.1,
+                height: Get.height * 0.01,
               ),
               Center(
                 child: AppButton(

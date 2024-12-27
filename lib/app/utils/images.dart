@@ -23,6 +23,8 @@ class Images {
   static String get logout => 'logout'.png;
   static String get security => 'security'.png;
   static String get fqa => 'fqa'.png;
+  static String get marker => 'marker'.png;
+  static String get comment => 'comment'.png;
 }
 
 extension on String {

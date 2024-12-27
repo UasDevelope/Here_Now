@@ -4,43 +4,35 @@ import 'package:here_now/app/utils/widgets.dart';
 
 void showRatingDialog(RxDouble rating, Function(double) onRatingUpdate) {
   Get.defaultDialog(
-    // Title will now only show text as string
-    title: AppString.addyourrating, // This is a simple string title
-    titleStyle: AppStyle.openSans(
-        fontSize: 14, fontWeight: FontWeight.w800, color: Colors.black),
-    // Adding custom content
+    title: AppString.addyourrating,
+    titleStyle: AppStyle.openSans(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.black),
     content: Obx(() => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RatingBar.builder(
-                  initialRating: rating.value, // Use the reactive rating value
-                  minRating: 1,
-                  itemSize: 40,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 3,
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                  onRatingUpdate: (newRating) {
-                    rating.value = newRating; // Update the rating reactively
-                    onRatingUpdate(
-                        newRating); // Call the onRatingUpdate function
-                  },
-                ),
-                SizedBox(width: 8),
-                Text(
-                  "${rating.value.toStringAsFixed(1)}/3", // Show rating with 1 decimal place
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
-          ],
-        )),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (index) {
+            bool isSelected = index < rating.value; // Check if the star should be selected
+            return GestureDetector(
+              onTap: () {
+                rating.value = index + 1.0; // Set the rating based on the tapped star
+                onRatingUpdate(rating.value); // Call the update function
+              },
+              child: Icon(
+                Icons.star,
+                color: isSelected ? Colors.amber : Colors.grey,
+                size: 40,
+              ),
+            );
+          }),
+        ),
+        SizedBox(width: 8),
+        Text(
+          "${rating.value.toStringAsFixed(1)}/3.0", // Show rating with 1 decimal place
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
+    )),
     actions: [
       SizedBox(width: 10), // Space between close and post button
       Center(
@@ -50,13 +42,13 @@ void showRatingDialog(RxDouble rating, Function(double) onRatingUpdate) {
           textSize: 20,
           width: Get.width / 2,
           text: AppString.postnow,
-          textColor: AppColors.white,
+          textColor: Colors.white,
           borderRadius: 10,
           onTap: () {
             Get.back();
           },
         ),
-      )
+      ),
     ],
   );
 }

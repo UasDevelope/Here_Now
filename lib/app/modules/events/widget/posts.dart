@@ -138,11 +138,21 @@ class EventPosts extends StatelessWidget {
                 SizedBox(
                   width: 30,
                 ),
-                Text("${AppString.interactions}  72",
-                    style: AppStyle.openSans(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800))
+                InkWell(
+                  onTap:(){
+                    commentsBottomSheet();
+                  },
+                  child: Image.asset(
+                    Images.comment,
+                    height: 30,
+                    width: 30,
+                  ),
+                ),
+                // Text("${AppString.comment}  72",
+                //     style: AppStyle.openSans(
+                //         color: Colors.black,
+                //         fontSize: 12,
+                //         fontWeight: FontWeight.w800))
               ],
             ),
           ],

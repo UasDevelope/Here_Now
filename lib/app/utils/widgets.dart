@@ -12,3 +12,5 @@ export 'package:here_now/app/utils/appbutton.dart';
 export 'package:here_now/app/routes/routes.dart';
 export 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:here_now/app/utils/rating_alert.dart';
+export 'package:readmore/readmore.dart';
+export 'package:here_now/app/modules/home/widget/comments.dart';

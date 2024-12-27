@@ -10,22 +10,29 @@ class LoginScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: Get.height * 0.1, // Top spacing
               ),
               Center(
-                child: Text(
-                  AppString.login,
-                  style: AppStyle.openSans(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: CircleAvatar(
+                  radius: 100,
+                  backgroundImage: AssetImage("assets/images/herenow.jpg"),
                 ),
               ),
               SizedBox(
-                height: Get.height * 0.08, // Spacing below title
+                height: Get.height / 14,
+              ),
+              Text(
+                AppString.login,
+                style: AppStyle.openSans(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              SizedBox(
+                height: Get.height * 0.02, // Spacing below title
               ),
               // Email Section
               Align(
@@ -78,7 +85,7 @@ class LoginScreen extends StatelessWidget {
                 borderRadius: 10.0,
               ),
               SizedBox(
-                height: Get.height * 0.3, // Spacing above button
+                height: Get.height * 0.08, // Spacing above button
               ),
               // Login Button
               Center(
@@ -94,7 +101,7 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: Get.height * 0.02, // Spacing before footer
+                height: Get.height * 0.03, // Spacing before footer
               ),
               // Footer
               Row(

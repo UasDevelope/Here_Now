@@ -5,15 +5,16 @@ import '../../../utils/widgets.dart';
 class TextGridView extends StatelessWidget {
   final List<String> items = [
     "City",
-    "Countie",
+    'contiene',
     "State",
-    "World",
     "Nation",
-    "RECENT",
-    "INSTITUTIONS",
-    "POPULAR",
-    "EVENTS",
+    "World",
+    "Recent",
+    "Popular",
+    "Events",
+    "Institutions",
   ];
+
 
   @override
   Widget build(BuildContext context) {
