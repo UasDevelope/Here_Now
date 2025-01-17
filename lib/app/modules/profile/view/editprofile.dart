@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:here_now/app/modules/profile/model/profile_model.dart';
+import 'package:here_now/app/utils/validator_utils.dart';
 
 import '../../../utils/widgets.dart';
 
@@ -7,6 +11,13 @@ class Editprofile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = Get.arguments;
+    final controller = ControllerLocator.profileController;
+    log("Arguments ${arguments["data"]}");
+    UserModel userModel = arguments["data"] as UserModel;
+    log("User name ${userModel.firstName}");
+    controller.storeDataInField(
+        userModel.firstName, userModel.lastName, userModel.email);
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Column(
@@ -75,10 +86,12 @@ class Editprofile extends StatelessWidget {
                   spacing: 20,
                   children: [
                     AppTextField(
+                      validator:
+                          Validators.validateRequired(AppString.firstname),
                       width: Get.width / 2.3,
                       height: 60,
                       hintText: AppString.firstname,
-                      controller: TextEditingController(),
+                      controller: controller.firstNameController,
                       keyboardType: TextInputType.name,
                       textColor: Colors.black,
                       fontSize: 11,
@@ -87,10 +100,12 @@ class Editprofile extends StatelessWidget {
                       borderRadius: 10.0,
                     ),
                     AppTextField(
+                      validator:
+                          Validators.validateRequired(AppString.lastname),
                       width: Get.width / 2.3,
                       height: 60,
                       hintText: AppString.lastname,
-                      controller: TextEditingController(),
+                      controller: controller.lastNameController,
                       keyboardType: TextInputType.name,
                       textColor: Colors.black,
                       fontSize: 11,
@@ -106,12 +121,12 @@ class Editprofile extends StatelessWidget {
                       fontSize: 12, fontWeight: FontWeight.w800),
                 ),
                 AppTextField(
-                  obscureText: true,
+                  validator: Validators.validateRequired(AppString.email),
                   maxline: 1,
                   width: Get.width,
                   height: 60,
-                  hintText: AppString.enterYourPassword,
-                  controller: TextEditingController(),
+                  hintText: AppString.enterYourEmail,
+                  controller: controller.emailController,
                   keyboardType: TextInputType.name,
                   textColor: Colors.black,
                   fontSize: 11,
@@ -119,24 +134,24 @@ class Editprofile extends StatelessWidget {
                   borderColor: AppColors.textfieldborder,
                   borderRadius: 10.0,
                 ),
-                Text(
-                  AppString.password,
-                  style: AppStyle.openSans(
-                      fontSize: 12, fontWeight: FontWeight.w800),
-                ),
-                AppTextField(
-                  obscureText: true,
-                  width: Get.width,
-                  height: 60,
-                  hintText: AppString.enterYourPassword,
-                  controller: TextEditingController(),
-                  keyboardType: TextInputType.name,
-                  textColor: Colors.black,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  borderColor: AppColors.textfieldborder,
-                  borderRadius: 10.0,
-                ),
+                // Text(
+                //   AppString.password,
+                //   style: AppStyle.openSans(
+                //       fontSize: 12, fontWeight: FontWeight.w800),
+                // ),
+                // AppTextField(
+                //   obscureText: true,
+                //   width: Get.width,
+                //   height: 60,
+                //   hintText: AppString.enterYourPassword,
+                //   controller: TextEditingController(),
+                //   keyboardType: TextInputType.name,
+                //   textColor: Colors.black,
+                //   fontSize: 11,
+                //   fontWeight: FontWeight.w800,
+                //   borderColor: AppColors.textfieldborder,
+                //   borderRadius: 10.0,
+                // ),
               ],
             ),
           ),

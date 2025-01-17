@@ -1,7 +1,7 @@
 export 'package:here_now/app/utils/colors.dart';
 export 'package:here_now/app/controllers/controller_locator.dart';
 export 'package:here_now/app/modules/splash/widgets/splash.dart';
-export  'package:flutter/cupertino.dart';
+export 'package:flutter/cupertino.dart';
 export 'package:get/get.dart';
 export 'package:here_now/app/utils/images.dart';
 export 'package:here_now/app/utils/appstyle.dart';
@@ -14,3 +14,4 @@ export 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:here_now/app/utils/rating_alert.dart';
 export 'package:readmore/readmore.dart';
 export 'package:here_now/app/modules/home/widget/comments.dart';
+export 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';

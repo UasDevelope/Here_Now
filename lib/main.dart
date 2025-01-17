@@ -3,10 +3,15 @@ import 'package:get/get.dart';
 import 'package:here_now/app/bindings/initial_binding.dart';
 import 'package:here_now/app/pages/pages.dart';
 import 'package:here_now/app/routes/routes.dart';
+import 'package:here_now/app/utils/pref_util.dart';
 
 import 'app/utils/images.dart';
 
-void main() {
+final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PrefUtil.init();
   runApp(MyApp());
 }
 
