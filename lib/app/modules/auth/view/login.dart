@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:here_now/app/utils/widgets.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final controller=ControllerLocator.authController;
+    return Obx(()=>LoadingOverlay(isLoading: controller.showLoading.value, child: Scaffold(
       backgroundColor: AppColors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -50,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                 width: Get.width,
                 height: 60,
                 hintText: AppString.enterYourEmail,
-                controller: TextEditingController(),
+                controller: controller.loginEmailOrPhone,
                 keyboardType: TextInputType.emailAddress,
                 textColor: Colors.black,
                 fontSize: 11,
@@ -76,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                 width: Get.width,
                 height: 60,
                 hintText: AppString.enterYourPassword,
-                controller: TextEditingController(),
+                controller:controller.loginPassword,
                 keyboardType: TextInputType.text,
                 textColor: Colors.black,
                 fontSize: 11,
@@ -97,7 +99,9 @@ class LoginScreen extends StatelessWidget {
                   text: AppString.login,
                   textColor: AppColors.white,
                   borderRadius: 10,
-                  onTap: () {},
+                  onTap: () {
+                    controller.login();
+                  },
                 ),
               ),
               SizedBox(
@@ -138,6 +142,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )));
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "602969430691",
+    "project_id": "herenow-36e2a",
+    "storage_bucket": "herenow-36e2a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602969430691:android:075d89d690dd50f6de3d16",
+        "android_client_info": {
+          "package_name": "com.example.here_now"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUqR2TYlaBzgyjOJ25GpxeBjt40IrtCfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

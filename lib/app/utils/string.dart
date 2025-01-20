@@ -14,7 +14,9 @@ class AppString {
   static String get comment => "Comments";
   static String get createnewpost => 'Create new post';
   static String get addpicturevides => 'Add Picture / Video';
+  static String get description => 'Description';
   static String get typesomething => 'Type something here..';
+  static String get title => 'Title';
   static String get postnow => 'Post Now';
   static String get settings => 'Settings';
   static String get logout => 'Logout';

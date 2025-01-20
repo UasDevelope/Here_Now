@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:here_now/app/utils/widgets.dart';
-
 import 'comments.dart';
 
 class Posts extends StatelessWidget {
@@ -28,7 +26,7 @@ class Posts extends StatelessWidget {
                 ),
                 SizedBox(width: 10), // Add spacing between the image and name
                 Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 10),
                   child: Text(
                     'John Doe',
                     style: AppStyle.openSans(
@@ -39,12 +37,15 @@ class Posts extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              "New York, 21/07/23 18:53",
-              style: AppStyle.openSans(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800),
+            Padding(
+              padding: EdgeInsets.only(left: 50),
+              child: Text(
+                "New York, 21/07/23 18:53",
+                style: AppStyle.openSans(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800),
+              ),
             ),
             SizedBox(
               height: 5,
@@ -75,13 +76,13 @@ class Posts extends StatelessWidget {
               height: 3,
             ),
             Container(
-              height: Get.height / 6,
+              height: Get.height / 3,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
                   7,
                 ), // Rounded corners with radius 15
                 image: DecorationImage(
-                  image: AssetImage(Images.posts),
+                  image: AssetImage("assets/images/img_1.png"),
                   fit: BoxFit
                       .cover, // Ensure the image covers the entire container
                 ),

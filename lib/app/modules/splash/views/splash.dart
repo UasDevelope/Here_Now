@@ -6,20 +6,21 @@ class SplashScreen extends StatelessWidget {
     ControllerLocator.splashController;
     return Scaffold(
       body: Container(
-        height:Get.height,
-        width:Get.width,
-        decoration: BoxDecoration(
-            gradient: AppColors.splashGradient,
-            image: SplashWidget.splashAssetImage()),
-        child: Column(
-          crossAxisAlignment:CrossAxisAlignment.end,
-           mainAxisAlignment:MainAxisAlignment.end,
-           children: [
-             SplashWidget.jumpingDots(),
-             SizedBox(height:70,),
-           ],
-            )
-      ),
+          height: Get.height,
+          width: Get.width,
+          decoration: BoxDecoration(
+              gradient: AppColors.splashGradient,
+              image: SplashWidget.splashAssetImage()),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SplashWidget.jumpingDots(),
+              SizedBox(
+                height: 70,
+              ),
+            ],
+          )),
     );
   }
 }
