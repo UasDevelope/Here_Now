@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:get/get.dart';
-import 'package:here_now/app/utils/pref.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:here_now/app/utils/pref_util.dart';  // Ensure the correct import
 import '../../../routes/routes.dart';
 
 class SplashController extends GetxController {
@@ -16,7 +15,7 @@ class SplashController extends GetxController {
   void _navigateBasedOnToken() async {
     // Wait for 2 seconds before checking the token (optional, for splash effect)
     Timer(Duration(seconds: 2), () async {
-      // Get SharedPreferences to check for the token
+      // Get token from SharedPreferences (or wherever it's stored)
       String? token = PrefUtil.getString(PrefUtil.changeToken); // Token key
 
       print("Token found: $token"); // Debugging print statement

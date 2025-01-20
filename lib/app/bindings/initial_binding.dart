@@ -6,6 +6,8 @@ import 'package:here_now/app/modules/events/controller/Events.dart';
 import 'package:here_now/app/modules/home/controller/home.dart';
 
 import '../modules/post/controller/controller.dart';
+import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
+import '../modules/auth/controller/auth_controller.dart';
 import '../modules/splash/controllers/splash.dart';
 
 class InitialBinding extends Bindings {
@@ -18,5 +20,7 @@ class InitialBinding extends Bindings {
     Get.lazyPut(() => PostController());
     Get.lazyPut(() => AuthController());
     Get.lazyPut(()=>LocationController());
+    Get.lazyPut(() => AuthController());
+    Get.lazyPut(() => ProfileController());
   }
 }

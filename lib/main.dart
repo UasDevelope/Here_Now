@@ -5,17 +5,20 @@ import 'package:here_now/app/bindings/initial_binding.dart';
 import 'package:here_now/app/pages/pages.dart';
 import 'package:here_now/app/routes/routes.dart';
 import 'package:here_now/app/utils/pref.dart';
+import 'package:here_now/app/utils/pref_util.dart';
 
 import 'app/utils/images.dart';
 import 'firebase_options.dart';
 
+
 void main() async {
+  // Ensure initialization of Firebase and preferences
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await PrefUtil.init(); // Initialize preferences only once
   runApp(MyApp());
-  PrefUtil.init();
 }
 
 class MyApp extends StatelessWidget {

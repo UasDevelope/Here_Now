@@ -21,12 +21,14 @@ class AppTextField extends StatelessWidget {
   final IconData? suffixIcon;
   final Function()? onSuffixTap;
   final int maxline;
+  final String? Function(String?)? validator;
   const AppTextField({
     Key? key,
     required this.width,
     required this.height,
     required this.hintText,
     required this.controller,
+    this.validator,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.textColor = Colors.black,
@@ -50,7 +52,10 @@ class AppTextField extends StatelessWidget {
       width: width,
       height: height,
       child: TextFormField(
-        maxLines: obscureText ? 1 : maxline,  // Enforce single line if obscureText is true
+        validator: validator,
+        maxLines: obscureText
+            ? 1
+            : maxline, // Enforce single line if obscureText is true
         controller: controller,
         keyboardType: keyboardType,
         obscureText: obscureText,
@@ -68,12 +73,13 @@ class AppTextField extends StatelessWidget {
             fontSize: fontSize,
             fontWeight: fontWeight,
           ),
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: hintColor) : null,
+          prefixIcon:
+              prefixIcon != null ? Icon(prefixIcon, color: hintColor) : null,
           suffixIcon: suffixIcon != null
               ? GestureDetector(
-            onTap: onSuffixTap,
-            child: Icon(suffixIcon, color: hintColor),
-          )
+                  onTap: onSuffixTap,
+                  child: Icon(suffixIcon, color: hintColor),
+                )
               : null,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadius),
