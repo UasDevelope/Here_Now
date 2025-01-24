@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/home/widget/home_header.dart';
-import 'package:here_now/app/modules/home/widget/posts.dart';
-
 import '../../../utils/widgets.dart';
+import '../controller/Events.dart';
+import '../widget/event_shimmer.dart';
 import '../widget/posts.dart';
 
 class EventScreen extends StatelessWidget {
@@ -10,25 +12,39 @@ class EventScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:AppColors.white,
+    EventsController controller = ControllerLocator.eventsController;
 
-      body: Column(
-        children: [
-          HomeHeader(),
-          Container(
-            height: Get.height / 1.36,
-            child: ListView.builder(
-              padding:EdgeInsets.zero,
-                physics: AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 3,
-                itemBuilder: (BuildContext context, int index) {
-                  return EventPosts(showMap:true,);
-                }),
-          )
-        ],
-      ),
-    );
+    return Scaffold(
+        backgroundColor: AppColors.white,
+        body: Obx(
+          () => controller.loading.value
+              ? EventPostsShimmer()
+              : RefreshIndicator(
+                  onRefresh: () {
+                    return controller.fetchAllEvents();
+                  },
+                  child: Column(
+                    children: [
+                      HomeHeader(),
+                      Container(
+                        height: Get.height / 1.36,
+                        child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: controller.eventList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final data = controller.eventList[index];
+                              log("${data}");
+                              return EventPosts(
+                                showMap: true,
+                                data: data,
+                              );
+                            }),
+                      )
+                    ],
+                  ),
+                ),
+        ));
   }
 }

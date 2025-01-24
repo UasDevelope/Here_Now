@@ -13,7 +13,7 @@ class AppString {
   static String get dontHaveAnAccount => "Don't have accounnt?";
   static String get comment => "Comments";
   static String get createnewpost => 'Create new post';
-  static String get addpicturevides => 'Add Picture / Video';
+  static String get addpicturevides => 'Add Picture';
   static String get description => 'Description';
   static String get typesomething => 'Type something here..';
   static String get title => 'Title';
@@ -29,4 +29,5 @@ class AppString {
   static String get contantno=>'Contact';
   static String get savechanges=>'Save Changes';
   static String get addyourrating=>'Add Rating';
+  static String get price => "Price";
 }

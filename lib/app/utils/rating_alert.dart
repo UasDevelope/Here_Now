@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:here_now/app/utils/widgets.dart';
 
-void showRatingDialog(RxDouble rating, Function(double) onRatingUpdate) {
+void showRatingDialog(RxDouble rating, Function(double) onRatingUpdate,
+    VoidCallback onTap) {
   Get.defaultDialog(
     title: AppString.addyourrating,
     titleStyle: AppStyle.openSans(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.black),
@@ -44,9 +45,7 @@ void showRatingDialog(RxDouble rating, Function(double) onRatingUpdate) {
           text: AppString.postnow,
           textColor: Colors.white,
           borderRadius: 10,
-          onTap: () {
-            Get.back();
-          },
+          onTap:onTap,
         ),
       ),
     ],

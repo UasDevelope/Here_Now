@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/profile/model/profile_model.dart';
+import 'package:here_now/app/utils/image_utils.dart';
 import 'package:here_now/app/utils/validator_utils.dart';
 
 import '../../../utils/widgets.dart';
@@ -58,25 +60,36 @@ class Editprofile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage(Images.person),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "Upload New Picture",
-                    style: GoogleFonts.openSans(
-                      color: AppColors.appColor, // Text color
-                      fontSize: 16, // Font size
-                      fontWeight: FontWeight.bold, // Font weight
-                      decoration: TextDecoration.underline, // Adds underline
-                      decorationColor: Colors.black, // Underline color
-                      decorationThickness: 4, // Thickness of underline
-                    ),
-                  ),
-                ),
+                Obx(() => Center(
+                      child: InkWell(
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          ImageUtils.pickAndUpdateImage(controller.imagePath);
+                        },
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: userModel.image == null &&
+                                  controller.imagePath.value == ""
+                              ? AssetImage(Images.person)
+                              : userModel.image != null
+                                  ? NetworkImage(userModel.image!)
+                                  : FileImage(File(controller.imagePath.value)),
+                        ),
+                      ),
+                    )),
+                // Center(
+                //   child: Text(
+                //     "Upload New Picture",
+                //     style: GoogleFonts.openSans(
+                //       color: AppColors.appColor, // Text color
+                //       fontSize: 16, // Font size
+                //       fontWeight: FontWeight.bold, // Font weight
+                //       decoration: TextDecoration.underline, // Adds underline
+                //       decorationColor: Colors.black, // Underline color
+                //       decorationThickness: 4, // Thickness of underline
+                //     ),
+                //   ),
+                // ),
                 Text(
                   AppString.username,
                   style: AppStyle.openSans(
@@ -166,7 +179,7 @@ class Editprofile extends StatelessWidget {
               textColor: AppColors.white,
               borderRadius: 10,
               onTap: () {
-                Get.toNamed(Routes.bottomNav);
+                controller.updateUserProfile();
               },
             ),
           ),

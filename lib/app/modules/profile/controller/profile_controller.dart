@@ -1,8 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
 import 'package:here_now/app/utils/api_utils.dart';
+import 'package:here_now/app/utils/image_utils.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
+import '../../../routes/routes.dart';
 import '../model/profile_model.dart';
 
 class ProfileController extends GetxController {
@@ -11,8 +15,36 @@ class ProfileController extends GetxController {
   final TextEditingController emailController = TextEditingController();
 
   RxString imagePath = "".obs;
+
+  RxString imageUrl = "".obs;
+
   final user = Rxn<UserModel>();
+
   RxBool isLoading = false.obs;
+
+  Future<void> updateUserProfile() async {
+    try {
+      CustomLoadingDialog.showCustomLoadingDialog("Updating information....");
+      if (imagePath.isNotEmpty) {
+        imageUrl.value =
+            await ImageUtils.uploadImageToCloudinary(File(imagePath.value));
+      }
+      final response = ApiClient().put(ApiEndPoints.updateUser, {
+        "firstName": firstNameController.text,
+        "lastName": lastNameController.text,
+        "image": imageUrl.isEmpty ? null : imageUrl.value,
+      });
+      CustomLoadingDialog.closeLoadingDialog();
+      getProfileData();
+      imagePath.value = "";
+      Get.back();
+      log("Response is $response");
+    } catch (e) {
+      CustomLoadingDialog.closeLoadingDialog();
+      ShortMessageUtils.showError("$e");
+    }
+  }
+
   void storeDataInField(String firstName, String lastName, String email) {
     firstNameController.text = firstName;
     lastNameController.text = lastName;

@@ -15,7 +15,6 @@ class ProfiileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = ControllerLocator.profileController;
-    controller.getProfileData();
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Column(

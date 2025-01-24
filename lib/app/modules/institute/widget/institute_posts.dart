@@ -1,18 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:here_now/app/modules/events/model/comment_model.dart';
-import 'package:here_now/app/modules/events/model/event_model.dart';
-import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/widgets.dart';
-import 'button.dart';
-import 'map.dart';
 
-class EventPosts extends StatelessWidget {
-  bool showMap;
-  Event data;
-  EventPosts({super.key, this.showMap = false, required this.data});
+import '../../../utils/widgets.dart';
+import '../../events/model/event_model.dart';
+import '../../events/widget/button.dart';
+import '../../events/widget/map.dart';
+
+class InstitutePosts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
@@ -30,16 +26,14 @@ class EventPosts extends StatelessWidget {
                 // Display user image if available, otherwise show a default image
                 CircleAvatar(
                   radius: 20, // Size of the circular image
-                  backgroundImage: data.user?.image != null
-                      ? NetworkImage("${data.user?.image}")
-                      : AssetImage(Images.person),
+                  backgroundImage: AssetImage(Images.person),
                 ),
                 SizedBox(width: 10), // Add spacing between the image and name
                 Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
                     // Safely display user name, if available
-                    "${data.user?.firstName ?? ''} ${data.user?.lastName ?? ''}",
+                    "{data.user?.firstName ?? ''} {data.user?.lastName ?? ''}",
                     style: AppStyle.openSans(
                       color: Colors.black,
                       fontSize: 16,
@@ -51,7 +45,7 @@ class EventPosts extends StatelessWidget {
             ),
             Text(
               // Format the createdAt date and include the location
-              "${data.location}, ${DateFormat('dd/MM/yy HH:mm').format(data.createdAt ?? DateTime.now())}",
+              "${DateTime.now()})}",
               style: AppStyle.openSans(
                 color: Colors.black,
                 fontSize: 12,
@@ -61,7 +55,7 @@ class EventPosts extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Text(data.description,
+            Text("data.description",
                 style: AppStyle.openSans(
                     color: Colors.black,
                     fontSize: 13,
@@ -78,7 +72,7 @@ class EventPosts extends StatelessWidget {
                       7,
                     ), // Rounded corners with radius 15
                     image: DecorationImage(
-                      image: NetworkImage(data.image),
+                      image: AssetImage(Images.event),
                       fit: BoxFit
                           .cover, // Ensure the image covers the entire container
                     ),
@@ -90,7 +84,7 @@ class EventPosts extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          data.location,
+                          "data.location",
                           style: AppStyle.openSans(
                               color: Colors.white,
                               fontSize: 12,
@@ -104,35 +98,13 @@ class EventPosts extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (showMap)
-                  EventsGoogleMap(
-                    showAdditional: true,
-                    event: data,
-                  ),
               ],
             ),
-            if (!showMap)
-              Center(
-                child: EventButton(
-                  imagePath: Images.rating,
-                  text: 'Add your Rating',
-                  onPressed: () {
-                    showRatingDialog(controller.rated, controller.changeRating,
-                        () {
-                      controller.addEventRating(data.id);
-                      log(data.id);
-                    });
-                  },
-                  height: 50.0,
-                  width: Get.width / 2,
-                  shadowColor: Colors.grey.withOpacity(0.6),
-                  buttonColor: Colors.white,
-                ),
-              ),
             Row(
               children: [
                 Text(
-                  "${double.parse(data.averageRating).toStringAsFixed(1)}",
+                  "aaverage",
+                  // "${double.parse().toStringAsFixed(1)}",
                   style: AppStyle.openSans(
                     color: Colors.black,
                     fontSize: 12,
@@ -142,7 +114,7 @@ class EventPosts extends StatelessWidget {
                 Image.asset(
                   Images.star,
                   height: 30,
-                  color: data.userRated ? AppColors.appColor : null,
+                  // color: data.userRated ? AppColors.appColor : null,
                 ),
                 Spacer(),
                 // Image.asset(
@@ -154,48 +126,48 @@ class EventPosts extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    controller.fetchComments(data.id).then((_) {
-                      commentsBottomSheet(
-                        commentController: controller.commentController,
-                        onSendComment: () {
-                          final newCommentText =
-                              controller.commentController.text.trim();
-                          if (newCommentText.isNotEmpty) {
-                            // Add a new comment to the local comments list
-                            controller.commentsList.add(
-                              Comment(
-                                user: commentUser(
-                                  email: userController.user.value!.email,
-                                  image: userController.user.value!.image,
-                                  firstName:
-                                      userController.user.value!.firstName,
-                                  lastName: userController.user.value!.lastName,
-                                ),
-                                content: newCommentText,
-                                createdAt: DateTime.now()
-                                    .toString(), // Current timestamp
-                              ),
-                            );
-
-                            // Clear the text field
-
-                            // Optionally send the comment to the server
-                            controller
-                                .addComment(
-                              data.id,
-                            )
-                                .then((success) {
-                              controller.commentController.clear();
-
-                              if (!success) {
-                                print("Failed to post comment to the server.");
-                              }
-                            });
-                          }
-                        },
-                      );
-                    });
-                    print(data.id);
+                    // controller.fetchComments(data.id).then((_) {
+                    //   // commentsBottomSheet(
+                    //   //   commentController: controller.commentController,
+                    //   //   onSendComment: () {
+                    //   //     final newCommentText =
+                    //   //     controller.commentController.text.trim();
+                    //   //     if (newCommentText.isNotEmpty) {
+                    //   //       // Add a new comment to the local comments list
+                    //   //       controller.commentsList.add(
+                    //   //         Comment(
+                    //   //           user: commentUser(
+                    //   //             email: userController.user.value!.email,
+                    //   //             image: userController.user.value!.image,
+                    //   //             firstName:
+                    //   //             userController.user.value!.firstName,
+                    //   //             lastName: userController.user.value!.lastName,
+                    //   //           ),
+                    //   //           content: newCommentText,
+                    //   //           createdAt: DateTime.now()
+                    //   //               .toString(), // Current timestamp
+                    //   //         ),
+                    //   //       );
+                    //   //
+                    //   //       // Clear the text field
+                    //   //
+                    //   //       // Optionally send the comment to the server
+                    //   //       controller
+                    //   //           .addComment(
+                    //   //         data.id,
+                    //   //       )
+                    //   //           .then((success) {
+                    //   //         controller.commentController.clear();
+                    //   //
+                    //   //         if (!success) {
+                    //   //           print("Failed to post comment to the server.");
+                    //   //         }
+                    //   //       });
+                    //   //     }
+                    //   //   },
+                    //   // );
+                    // });
+                    // print(data.id);
                   },
                   child: Image.asset(
                     Images.comment,
@@ -204,7 +176,7 @@ class EventPosts extends StatelessWidget {
                   ),
                 ),
 
-                Text("${data.comments.length}",
+                Text("${"data.comments.length"}",
                     style: AppStyle.openSans(
                         color: Colors.black,
                         fontSize: 12,

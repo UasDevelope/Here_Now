@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:here_now/app/utils/widgets.dart'; // Importing controller locator
+
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

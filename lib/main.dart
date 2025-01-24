@@ -1,23 +1,19 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:here_now/app/bindings/initial_binding.dart';
 import 'package:here_now/app/pages/pages.dart';
 import 'package:here_now/app/routes/routes.dart';
-import 'package:here_now/app/utils/pref.dart';
 import 'package:here_now/app/utils/pref_util.dart';
 
 import 'app/utils/images.dart';
-import 'firebase_options.dart';
 
+final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
 void main() async {
-  // Ensure initialization of Firebase and preferences
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await PrefUtil.init(); // Initialize preferences only once
+  await PrefUtil.init();
+  await dotenv.load(fileName: 'assets/.env');
   runApp(MyApp());
 }
 

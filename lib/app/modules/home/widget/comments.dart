@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:here_now/app/controllers/controller_locator.dart';
 import 'package:here_now/app/utils/appbutton.dart';
 import 'package:here_now/app/utils/appstyle.dart';
 import 'package:here_now/app/utils/colors.dart';
+import 'package:here_now/app/utils/date_time_utlisee.dart';
 import 'package:here_now/app/utils/images.dart';
 import 'package:here_now/app/utils/string.dart';
 
-Future commentsBottomSheet() {
-  // Controller to manage comments and input
-  final TextEditingController commentController = TextEditingController();
-  final List<String> comments = [
-    "Why don’t skeletons fight each other? They don’t have the guts!",
-    "I told my computer I needed a break, and now it’s frozen.",
-    "Parallel lines have so much in common… it’s a shame they’ll never meet!",
-    "I’m on a seafood diet. I see food, and I eat it.",
-    "I would tell you a chemistry joke, but I know I wouldn’t get a reaction.",
-  ];
-
+Future<void> commentsBottomSheet({
+  required TextEditingController commentController,
+  required VoidCallback onSendComment,
+}) {
   return Get.bottomSheet(
     StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
@@ -44,128 +39,148 @@ Future commentsBottomSheet() {
               Text(
                 AppString.comment,
                 style: AppStyle.openSans(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800),
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               SizedBox(height: 16),
               // Comments List
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: comments.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0), // Adds spacing between comments
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // User Avatar
-                          CircleAvatar(
-                            backgroundImage: AssetImage(Images
-                                .person), // Replace with dynamic user image URL
-                            radius: 20,
-                          ),
-                          SizedBox(
-                              width: 10), // Adds space between avatar and text
-                          // Comment Details
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Username and Timestamp
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Usama Mukhtiar", // Replace with dynamic username
-                                      style: AppStyle.openSans(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                    Text(
-                                      "2 hours ago", // Replace with dynamic timestamp
-                                      style: AppStyle.openSans(
-                                        color: Colors.grey,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 4), // Adds space between rows
-                                // Comment Text
-                                Text(
-                                  comments[index], // Dynamic comment text
-                                  style: AppStyle.openSans(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+              Obx(() {
+                final comments = ControllerLocator
+                    .eventsController.commentsList; // Observing comments list
+                return comments.isEmpty
+                    ? Text(
+                        "No comments yet.",
+                        style: AppStyle.openSans(
+                          color: Colors.grey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final comment = comments[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: comment.user!.image != null
+                                        ? NetworkImage(comment.user!.image!)
+                                        : AssetImage(Images.person)
+                                            as ImageProvider,
+                                    radius: 20,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "${comment.user!.firstName}${comment.user!.lastName!}",
+                                              style: AppStyle.openSans(
+                                                color: Colors.black,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                            Text(
+                                              comment.createdAt != null
+                                                  ? DateTimeUtils.formatToIsoWithTime(DateTime.parse(comment.createdAt!))
+                                                  : '', // Fallback to an empty string if createdAt is null
+                                              style: AppStyle.openSans(
+                                                color: Colors.grey,
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
 
+
+                                          ],
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          comment.content!,
+                                          style: AppStyle.openSans(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      );
+              }),
               Divider(thickness: 1),
               // Add Comment Section
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Comment Input Field
                   Expanded(
-                    child: TextFormField(
-                      controller: commentController,
-                      decoration: InputDecoration(
-                        hintText: "Write a comment...",
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          print(value);
+                        },
+                        controller: commentController,
+                        decoration: InputDecoration(
+                          hintText: "Write a comment...",
+                          hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          filled: true,
+                          fillColor: Colors.transparent, // Use transparent to inherit container color
+                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          border: InputBorder.none,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide.none,
-                        ),
+                        maxLines: 1,
                       ),
                     ),
                   ),
-                  SizedBox(width: 8),
-                  // Send Button
-                  AppButton(
-                      height: 50,
-                      width: 100,
-                      text: "Send",
-                      textColor: AppColors.appColor,
-                      borderRadius: 20,
-                      onTap: () {
-                        if (commentController.text.isNotEmpty) {
-                          setState(() {
-                            comments.add(commentController
-                                .text); // Add comment to the list
-                          });
-                          commentController.clear(); // Clear the input field
-                        }
-                      })
+                  SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: onSendComment,
+                    child: Container(
+                      height: 48,
+                      width: 48,
+                      decoration: BoxDecoration(
+                        color: AppColors.appColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
                 ],
               ),
+
             ],
           ),
         );
       },
     ),
-    isScrollControlled:
-        true, // Ensures the bottom sheet can expand fully if needed
+    isScrollControlled: true,
   );
 }

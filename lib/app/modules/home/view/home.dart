@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
           ),
           HomeMap(),
           Container(
-            height: Get.height / 2.1,
+            height: Get.height /2.1,
             child: ListView.builder(
                 padding: EdgeInsets.zero,
                 itemCount: 5,

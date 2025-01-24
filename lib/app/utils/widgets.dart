@@ -14,5 +14,4 @@ export 'package:google_maps_flutter/google_maps_flutter.dart';
 export 'package:here_now/app/utils/rating_alert.dart';
 export 'package:readmore/readmore.dart';
 export 'package:here_now/app/modules/home/widget/comments.dart';
-
 export 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
