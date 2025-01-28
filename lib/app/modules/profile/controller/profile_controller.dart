@@ -27,7 +27,7 @@ class ProfileController extends GetxController {
       CustomLoadingDialog.showCustomLoadingDialog("Updating information....");
       if (imagePath.isNotEmpty) {
         imageUrl.value =
-            await ImageUtils.uploadImageToCloudinary(File(imagePath.value));
+            await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
       }
       final response = ApiClient().put(ApiEndPoints.updateUser, {
         "firstName": firstNameController.text,

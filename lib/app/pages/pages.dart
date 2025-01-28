@@ -9,6 +9,7 @@ import 'package:here_now/app/modules/profile/widget/AboutAppPage.dart';
 import 'package:here_now/app/modules/profile/widget/PrivacyPolicyPage.dart';
 import 'package:here_now/app/modules/profile/widget/SecurityPage.dart';
 import 'package:here_now/app/modules/profile/widget/TermsOfServicePage.dart';
+import 'package:here_now/app/modules/search/view/search_screen.dart';
 import '../modules/profile/widget/FAQPage.dart';
 import '../modules/splash/views/splash.dart';
 import '../utils/widgets.dart';
@@ -28,11 +29,12 @@ class AppPages {
       binding: InitialBinding(),
     ),
     GetPage(name: Routes.profile, page: () => ProfiileScreen()),
+    GetPage(name: Routes.search, page: () => SearchScreen()),
     GetPage(name: Routes.security, page: () => SecurityPage()),
     GetPage(name: Routes.fqa, page: () => FAQPage()),
     GetPage(name: Routes.termsOfService, page: () => TermsOfServicePage()),
     GetPage(name: Routes.privacyPolicy, page: () => PrivacyPolicyPage()),
     GetPage(name: Routes.aboutApp, page: () => AboutAppPage()),
-    GetPage(name:Routes.editprofile, page: ()=>Editprofile()),
+    GetPage(name: Routes.editprofile, page: () => Editprofile()),
   ];
 }

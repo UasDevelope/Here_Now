@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../utils/widgets.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final bool isNews;
+  const HomeHeader({super.key, this.isNews = true});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,14 @@ class HomeHeader extends StatelessWidget {
               height: 75,
               fit: BoxFit.fill,
             ),
-            Image.asset(
-              Images.search,
-              height: 30,
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.search, arguments: {"isNews": isNews});
+              },
+              child: Image.asset(
+                Images.search,
+                height: 30,
+              ),
             ),
             InkWell(
               onTap: () {

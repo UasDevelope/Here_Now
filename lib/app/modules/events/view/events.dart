@@ -25,7 +25,9 @@ class EventScreen extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      HomeHeader(),
+                      HomeHeader(
+                        isNews: false,
+                      ),
                       Container(
                         height: Get.height / 1.36,
                         child: ListView.builder(

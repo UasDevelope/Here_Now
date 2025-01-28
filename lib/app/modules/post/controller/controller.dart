@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:intl/intl.dart';
+import '../../../routes/routes.dart';
 import '../../../utils/api_utils.dart';
+import '../../../utils/image_utils.dart';
 import '../../../utils/location_utils.dart';
 
 class PostController extends GetxController {
@@ -14,6 +16,7 @@ class PostController extends GetxController {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contactController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  RxString imagePath = "".obs;
   RxString startDate = ''.obs;
   RxString endDate = ''.obs;
   final RxMap<String, List<String>> categoryToNewsType = <String, List<String>>{
@@ -41,6 +44,8 @@ class PostController extends GetxController {
       "Institutions",
     ],
   }.obs;
+
+  RxString imageUrl = "".obs;
 
   final RxString selectedCategory = "Events".obs; // Default selected category
   final RxString selectedNews = "".obs; // Default selected news type
@@ -76,12 +81,42 @@ class PostController extends GetxController {
     return null; // Return null if no date was picked
   }
 
+  Future<void> createNewsPost() async {
+    CustomLoadingDialog.showCustomLoadingDialog("Creating News Post....");
+    Map<String, dynamic> location = await LocationService.getCurrentLocation();
+    if (imagePath.isNotEmpty) {
+      imageUrl.value =
+          await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
+    }
+    var body = {
+      "image": imageUrl.value,
+      "title": titleController.text,
+      "description": descriptionController.text,
+      "lat": location['lat'],
+      "long": location["lng"],
+      "location": location['locationName'],
+      "video": "videoUrl",
+      "category": selectedCategory.value,
+      "typeNews": selectedNews.value
+    };
+    try {
+      final response = await ApiClient().post(ApiEndPoints.addNews, body);
+      log("Response is $response");
+      CustomLoadingDialog.closeLoadingDialog();
+      ShortMessageUtils.showSuccess("${response["message"]}");
+      clearEvents();
+      Get.offNamed(Routes.bottomNav);
+    } catch (e) {
+      ShortMessageUtils.showError("$e");
+    }
+  }
+
   Future<void> createEventPost() async {
     Map<String, dynamic> location = await LocationService.getCurrentLocation();
     var body = {
       "title": titleController.text,
       "description": descriptionController.text,
-      "image": "imageUrl",
+      "image": "https://placehold.co/600x400/orange/white",
       "video": "videoUrl",
       "lat": location['lat'],
       "long": location["lng"],
@@ -89,19 +124,19 @@ class PostController extends GetxController {
       "contact": contactController.text,
       "price": priceController.text,
       "startDate": startDate.value,
-      "endDate": endDate.value, // Ensure date is in ISO format
+      "endDate": endDate.value,
     };
     try {
       CustomLoadingDialog.showCustomLoadingDialog("Creating post....");
       final response = await ApiClient().post(ApiEndPoints.createEvent, body);
       log("Response is $response");
+      CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showSuccess("${response["message"]}");
       clearEvents();
+      Get.offNamed(Routes.bottomNav);
     } catch (e) {
       log("Error$e");
-    } finally {
-      CustomLoadingDialog.closeLoadingDialog();
-    }
+    } finally {}
   }
   //
   // Future<void> createInstituteNews() async {

@@ -21,11 +21,13 @@ class AppTextField extends StatelessWidget {
   final IconData? suffixIcon;
   final Function()? onSuffixTap;
   final int maxline;
+  final bool isAutoFocus;
   final String? Function(String?)? validator;
   const AppTextField({
     Key? key,
     required this.width,
     required this.height,
+    this.isAutoFocus = false,
     required this.hintText,
     required this.controller,
     this.validator,
@@ -52,6 +54,7 @@ class AppTextField extends StatelessWidget {
       width: width,
       height: height,
       child: TextFormField(
+        autofocus: isAutoFocus,
         validator: validator,
         maxLines: obscureText
             ? 1

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:here_now/app/modules/bottom/controller/bottom_nav.dart';
@@ -8,6 +9,7 @@ import 'package:here_now/app/modules/profile/controller/profile_controller.dart'
 import 'package:here_now/app/modules/splash/controllers/splash.dart';
 
 import '../modules/auth/controller/auth_controller.dart';
+import '../modules/search/controller/search_controller.dart';
 
 class ControllerLocator {
   static SplashController get splashController => Get.find<SplashController>();
@@ -18,5 +20,7 @@ class ControllerLocator {
   static AuthController get authController => Get.find<AuthController>();
   static ProfileController get profileController =>
       Get.find<ProfileController>();
-  static PostController get  postController  => Get.find<PostController>();
+  static PostController get postController => Get.find<PostController>();
+  static SearchScreenController get searchController =>
+      Get.find<SearchScreenController>();
 }

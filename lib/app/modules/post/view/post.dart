@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/profile/widget/profile_shimmer_effect.dart';
+import 'package:here_now/app/utils/image_utils.dart';
 import '../../../utils/widgets.dart';
 
 class Postscreen extends StatelessWidget {
@@ -90,17 +91,31 @@ class Postscreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Text(
-                                AppString.addpicturevides,
-                                style: AppStyle.openSans(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800),
+
+                              InkWell(
+                                onTap: () {
+                                  ImageUtils.pickAndUpdateImage(
+                                      controller.imagePath);
+                                },
+                                child: Text(
+                                  AppString.addpicturevides,
+                                  style: AppStyle.openSans(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800),
+                                ),
                               ),
-                              Image.asset(
-                                Images.addimage,
-                                height: 40,
-                              ),
+                              Obx(() => controller.imagePath.isNotEmpty
+                                  ? Image.file(
+                                      File(
+                                        controller.imagePath.value,
+                                      ),
+                                      height: 40,
+                                    )
+                                  : Image.asset(
+                                      Images.addimage,
+                                      height: 40,
+                                    )),
 
                               Container(
                                 padding:
@@ -332,7 +347,12 @@ class Postscreen extends StatelessWidget {
                                   textColor: AppColors.white,
                                   borderRadius: 10,
                                   onTap: () {
-                                    controller.createEventPost();
+                                    if (controller.selectedCategory.value ==
+                                        "Events") {
+                                      controller.createEventPost();
+                                    } else {
+                                      controller.createNewsPost();
+                                    }
                                     // Get.toNamed(Routes.bottomNav);
                                   },
                                 ),

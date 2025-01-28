@@ -19,12 +19,29 @@ class ApiEndPoints {
   static const createEvent = "$events/add";
   static const addEventRating = "$events/rating";
   static const addComment = "$events/addComments";
+
   ///News Creation Post
-  static const String  News="/api/news";
-  static String  addNews="$News/addNews";
-  static  String getComments(String eventId){
+  static const String news = "/api/news";
+  static String addNews = "$news/addNews";
+  static String addNewsRating = "$news/addRating";
+  static String addNewsComment = "$news/addComment";
+
+  static String getNewsComments(String newsId) {
+    return "$news/getComments/$newsId";
+  }
+
+  static String getComments(String eventId) {
     return "$events/getComments/$eventId";
   }
+
+  static String getNews({String newsType = "", String category = "News"}) {
+    String url = "$news/getAllNews?category=$category";
+    if (newsType.isNotEmpty) {
+      url += "&typeNews=$newsType";
+    }
+    return url;
+  }
+
   static String uploadImage(String cloudName) {
     return '/$cloudName/upload/';
   }
@@ -37,6 +54,7 @@ class ApiClient {
   ApiClient({this.baseUrl = _defaultBaseUrl});
   Map<String, String> _getHeaders() {
     final String token = PrefUtil.getString(PrefUtil.token);
+    log("Token is $token");
     return {
       'Content-Type': 'application/json',
       if (token.isNotEmpty) 'Authorization': 'Bearer $token',

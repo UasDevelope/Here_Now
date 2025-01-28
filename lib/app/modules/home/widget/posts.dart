@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:here_now/app/utils/widgets.dart';
@@ -5,17 +7,45 @@ import 'package:here_now/app/utils/widgets.dart';
 import 'comments.dart';
 
 class Posts extends StatelessWidget {
-  const Posts({super.key});
+  final String userName;
+  final String locationAndTime;
+  final String postDescription;
+  final String postImage;
+  final String coordinates;
+  final int likes;
+  final int comments;
+  final VoidCallback? onRate;
+  final VoidCallback? onComment;
+  final String userAvatar;
+  final String starIcon;
+  final String commentIcon;
+  final String thumbIcon;
+
+  Posts({
+    Key? key,
+    this.userName = "John Doe",
+    this.locationAndTime = "New York, 21/07/23 18:53",
+    this.postDescription =
+        "Donec eleifend hendrerit purus et dignissim. Nunc lacinia lorem ut eros scelerisque, quis semper felis accumsan. Proin tempus dolor ex, at convallis mauris sollicitudin sit amet.",
+    this.postImage = "",
+    this.coordinates = "41.9028° N 12.4964° E",
+    this.likes = 555,
+    this.comments = 72,
+    this.onRate,
+    this.onComment,
+    this.userAvatar = "assets/images/person.png",
+    this.starIcon = "assets/images/star.png",
+    this.commentIcon = "assets/images/comment.png",
+    this.thumbIcon = "assets/images/thumb.png",
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final controller = ControllerLocator.homeController;
+    log("Post image is ${postImage == "" || postImage == "null"} $postImage");
     return Container(
-      padding: EdgeInsets.only(
-          left: 8, right: 8, top: 8), // Add some padding for better UI
+      padding: const EdgeInsets.all(8), // Add some padding for better UI
       child: SingleChildScrollView(
         child: Column(
-          spacing: 4,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -23,67 +53,60 @@ class Posts extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20, // Size of the circular image
-                  backgroundImage:
-                      AssetImage(Images.person), // Replace with your image path
+                  backgroundImage: AssetImage(userAvatar),
                 ),
-                SizedBox(width: 10), // Add spacing between the image and name
+                const SizedBox(
+                    width: 10), // Add spacing between the image and name
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
-                    'John Doe',
+                    userName,
                     style: AppStyle.openSans(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800),
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
             ),
             Text(
-              "New York, 21/07/23 18:53",
+              locationAndTime,
               style: AppStyle.openSans(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800),
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-            SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             ReadMoreText(
               style: AppStyle.openSans(
-                  color: Colors.black,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800),
-              'Donec eleifend hendrerit purus et dignissim. Nunc lacinia lorem ut eros scelerisque, quis semper felis accumsan. Proin tempus dolor ex, at convallis mauris sollicitudin sit amet.',
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+              ),
+              postDescription,
               trimMode: TrimMode.Line,
               trimLines: 2,
               colorClickableText: Colors.pink,
               trimCollapsedText: 'Show more',
               trimExpandedText: 'Show less',
               moreStyle: AppStyle.openSans(
-                  color: AppColors.appColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w900),
+                color: AppColors.appColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+              ),
             ),
-            // Text(
-            //     "Donec eleifend hendrerit purus et dignissim. Nunc lacinia lorem ut eros scelerisque, quis semper felis accumsan. Proin tempus dolor ex, at convallis mauris sollicitudin sit amet.",
-            //     style: AppStyle.openSans(
-            //         color: Colors.black,
-            //         fontSize: 13,
-            //         fontWeight: FontWeight.w800)),
-            SizedBox(
-              height: 3,
-            ),
+            const SizedBox(height: 3),
             Container(
-              height: Get.height / 6,
+              height: MediaQuery.of(context).size.height / 6,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  7,
-                ), // Rounded corners with radius 15
+                borderRadius: BorderRadius.circular(7),
                 image: DecorationImage(
-                  image: AssetImage(Images.posts),
-                  fit: BoxFit
-                      .cover, // Ensure the image covers the entire container
+                  image: postImage == "" || postImage == "null"
+                      ? AssetImage(Images.posts)
+                      : NetworkImage(postImage),
+                  fit: BoxFit.cover,
                 ),
               ),
               child: Row(
@@ -93,15 +116,16 @@ class Posts extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "41.9028° N 12.4964° E",
+                      coordinates,
                       style: AppStyle.openSans(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800),
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                   Image.asset(
-                    Images.thumb,
+                    thumbIcon,
                     height: 30,
                   ),
                 ],
@@ -110,45 +134,38 @@ class Posts extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "555",
+                  likes.toString(),
                   style: AppStyle.openSans(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800),
-                ),
-                InkWell(
-                  onTap: () {
-                    showRatingDialog(
-                      controller.rated, // Pass the reactive rating
-                      controller
-                          .changeRating,
-                        (){}
-                    );
-                  },
-                  child: Image.asset(
-                    Images.star,
-                    height: 70,
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                Spacer(),
                 InkWell(
-                  onTap: () {
-                    // commentsBottomSheet();
-                  },
+                  onTap: onRate,
                   child: Image.asset(
-                    Images.comment,
+                    starIcon,
+                    height: 30,
+                  ),
+                ),
+                const Spacer(),
+                InkWell(
+                  onTap: onComment,
+                  child: Image.asset(
+                    commentIcon,
                     height: 30,
                     width: 30,
                   ),
                 ),
-                SizedBox(
-                  width: 5,
+                const SizedBox(width: 5),
+                Text(
+                  comments.toString(),
+                  style: AppStyle.openSans(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-                Text("72",
-                    style: AppStyle.openSans(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800))
               ],
             )
           ],

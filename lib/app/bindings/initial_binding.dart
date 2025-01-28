@@ -5,6 +5,7 @@ import 'package:here_now/app/modules/home/controller/home.dart';
 import 'package:here_now/app/modules/post/controller/controller.dart';
 import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import '../modules/auth/controller/auth_controller.dart';
+import '../modules/search/controller/search_controller.dart';
 import '../modules/splash/controllers/splash.dart';
 
 class InitialBinding extends Bindings {
@@ -18,5 +19,6 @@ class InitialBinding extends Bindings {
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => PostController());
     Get.lazyPut(() => ProfileController());
+    Get.lazyPut(() => SearchScreenController());
   }
 }

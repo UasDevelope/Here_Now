@@ -11,6 +11,7 @@ class EventsController extends GetxController {
   Rx<GoogleMapController?> googleMapController = Rx<GoogleMapController?>(null);
   final TextEditingController commentController = TextEditingController();
   RxList<Event> eventList = <Event>[].obs;
+  RxList<Event> filteredEventList = <Event>[].obs;
   RxList<Comment> commentsList = <Comment>[].obs;
 
   RxBool loading = RxBool(false);
@@ -87,6 +88,22 @@ class EventsController extends GetxController {
     }
   }
 
+  void applyEventFilter() {
+    String searchValue = ControllerLocator.searchController.searchedValue.value;
+    log("Search value is $searchValue");
+    if (searchValue.isEmpty) {
+      filteredEventList.value = eventList;
+    } else {
+      // Filter the list based on search input
+      filteredEventList.value = eventList
+          .where((news) =>
+          news.description
+              .toLowerCase()
+              .contains(searchValue.toLowerCase()))
+          .toList();
+    }
+  }
+
   Future<void> fetchAllEvents() async {
     loading.value = true;
     try {
@@ -95,6 +112,7 @@ class EventsController extends GetxController {
       if (response["events"] != null) {
         eventList.value = List<Event>.from(
             response["events"].map((events) => Event.fromJson(events)));
+        applyEventFilter();
       }
       ShortMessageUtils.showSuccess(response["message"]);
     } catch (e) {
