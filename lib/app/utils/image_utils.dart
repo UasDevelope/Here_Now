@@ -42,7 +42,7 @@ class ImageUtils {
 
   static Future<void> pickAndUpdateImage(RxString pathToUpdate) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
       final XFile? compressImage = await ImageUtils.compressImage(image);

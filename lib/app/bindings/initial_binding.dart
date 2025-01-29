@@ -16,7 +16,6 @@ class InitialBinding extends Bindings {
     Get.lazyPut(() => EventsController());
     Get.lazyPut(() => HomeController());
     Get.lazyPut(() => AuthController());
-    Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => PostController());
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => SearchScreenController());
