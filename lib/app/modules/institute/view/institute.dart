@@ -87,6 +87,7 @@ class InstituteScreen extends StatelessWidget {
                                   "You already added rating to this post");
                             }
                           },
+                          //
                           onComment: () {
                             homeController.fetchComments(data.id);
                             newsCommentsBottomSheet(
