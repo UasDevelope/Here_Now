@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer';
 import 'dart:io';
@@ -10,7 +9,6 @@ import 'package:here_now/app/utils/api_utils.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-
 class ImageUtils {
   static Future<XFile?> compressImage(XFile originalImage) async {
     final directory = path.dirname(originalImage.path);

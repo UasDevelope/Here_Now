@@ -22,17 +22,17 @@ class PostController extends GetxController {
   RxString endDate = ''.obs;
   final RxMap<String, List<String>> categoryToNewsType = <String, List<String>>{
     "Events": [],
-    "Institutes": [
-      "City",
-      'contiene',
-      "State",
-      "Nation",
-      "World",
-      "Recent",
-      "Popular",
-      "Events",
-      "Institutions",
-    ],
+    // "Institutes": [
+    //   "City",
+    //   'contiene',
+    //   "State",
+    //   "Nation",
+    //   "World",
+    //   "Recent",
+    //   "Popular",
+    //   "Events",
+    //   "Institutions",
+    // ],
     "News": [
       "City",
       'contiene',

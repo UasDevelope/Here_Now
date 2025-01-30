@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:here_now/app/controllers/location.dart';
 import 'package:here_now/app/utils/validator_utils.dart';
 
 import '../../../utils/widgets.dart';
@@ -9,11 +10,12 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = ControllerLocator.authController;
+    Get.put(LocationController());
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding:EdgeInsets.all(15),
           child: Form(
             child: Column(
               spacing: 7,

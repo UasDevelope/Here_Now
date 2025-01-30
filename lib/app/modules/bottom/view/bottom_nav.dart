@@ -47,11 +47,11 @@ class BottomNav extends StatelessWidget {
                   unselectedColor: Colors.grey,
                   label: "Post",
                 ),
-                CustomBottomNavItem.create(
-                  imagePath: Images.institue,
-                  isSelected: controller.currentIndex.value == 3,
-                  label: "Institute",
-                ),
+                // CustomBottomNavItem.create(
+                //   imagePath: Images.institue,
+                //   isSelected: controller.currentIndex.value == 3,
+                //   label: "Institute",
+                // ),
               ],
             ),
           ),
