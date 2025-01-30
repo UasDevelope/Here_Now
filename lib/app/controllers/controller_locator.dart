@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:here_now/app/controllers/location.dart';
 import 'package:here_now/app/modules/bottom/controller/bottom_nav.dart';
 import 'package:here_now/app/modules/events/controller/Events.dart';
 import 'package:here_now/app/modules/home/controller/home.dart';
@@ -23,4 +24,6 @@ class ControllerLocator {
   static PostController get postController => Get.find<PostController>();
   static SearchScreenController get searchController =>
       Get.find<SearchScreenController>();
+  static LocationController get locationController =>
+      Get.find<LocationController>();
 }

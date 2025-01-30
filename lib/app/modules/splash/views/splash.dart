@@ -5,6 +5,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ControllerLocator.splashController;
+    ControllerLocator.locationController;
     return Scaffold(
       body: Container(
           height: Get.height,

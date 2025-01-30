@@ -27,7 +27,11 @@ class NewsWithScore {
   final String category;
   final double lat;
   final double long;
+  final double averageRating;
   final String location;
+  final String city;
+  final String state;
+  final String country;
   final User user;
   final int views;
   final List<dynamic> newsComments;
@@ -36,7 +40,7 @@ class NewsWithScore {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int commentsCount;
-
+  final bool isRating;
   NewsWithScore({
     required this.id,
     required this.title,
@@ -47,7 +51,12 @@ class NewsWithScore {
     required this.category,
     required this.lat,
     required this.long,
+    required this.averageRating,
     required this.location,
+    required this.city,
+    required this.isRating,
+    required this.state,
+    required this.country,
     required this.user,
     required this.views,
     required this.newsComments,
@@ -65,11 +74,16 @@ class NewsWithScore {
       description: json['description'] ?? '',
       image: json['image'],
       video: json['video'],
+      isRating: json['isRated'] ?? false,
       typeNews: json['typeNews'] ?? '',
       category: json['category'] ?? '',
       lat: (json['lat'] ?? 0).toDouble(),
       long: (json['long'] ?? 0).toDouble(),
+      averageRating: double.tryParse(json['averageRating'].toString()) ?? 0.0,
       location: json['location'] ?? '',
+      city: json['city'] ?? 'Mountain View', // Default: Mountain View
+      state: json['state'] ?? 'California', // Default: California
+      country: json['country'] ?? 'United States', // Default: United States
       user: User.fromJson(json['user']),
       views: json['views'] ?? 0,
       newsComments: json['newsComments'] ?? [],

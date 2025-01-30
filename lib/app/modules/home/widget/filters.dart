@@ -5,9 +5,9 @@ import '../../../utils/widgets.dart';
 class TextGridView extends StatelessWidget {
   final List<String> items = [
     "City",
-    'contiene',
+    'Country',
     "State",
-    "Nation",
+    // "Nation",
     "World",
     "Recent",
     "Popular",

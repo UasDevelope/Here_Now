@@ -96,8 +96,7 @@ class EventsController extends GetxController {
     } else {
       // Filter the list based on search input
       filteredEventList.value = eventList
-          .where((news) =>
-          news.description
+          .where((news) => news.description
               .toLowerCase()
               .contains(searchValue.toLowerCase()))
           .toList();
@@ -114,7 +113,6 @@ class EventsController extends GetxController {
             response["events"].map((events) => Event.fromJson(events)));
         applyEventFilter();
       }
-      ShortMessageUtils.showSuccess(response["message"]);
     } catch (e) {
       log("Error$e");
     } finally {

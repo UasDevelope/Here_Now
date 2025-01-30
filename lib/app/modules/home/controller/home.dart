@@ -14,9 +14,9 @@ import '../model/news_comment_model.dart';
 
 class HomeController extends GetxController {
   Rx<GoogleMapController?> googleMapController = Rx<GoogleMapController?>(null);
-  // Reactive markers
+
   var markers = <Marker>{}.obs;
-  // Default camera position centered in Italy
+  final locationController = ControllerLocator.locationController;
 
   Rx<CameraPosition> cameraPosition = CameraPosition(
     target: LatLng(42.8333, 12.8333),
@@ -28,6 +28,68 @@ class HomeController extends GetxController {
   }
 
   RxList<LatLng> newLocation = <LatLng>[].obs;
+  var newsList = <NewsWithScore>[].obs;
+
+  var filteredNews = <NewsWithScore>[].obs;
+
+  Future<void> filterNews() async {
+    // Retrieve selected filter type
+    String selectedFilter = selectedNewsType.value;
+    Map<String, dynamic> location = locationController.userLocation;
+    final controller = ControllerLocator.eventsController;
+
+    // Extract location details
+    String city = location["city"] ?? "";
+    String state = location["state"] ?? "";
+    String country = location["country"] ?? "";
+
+    // Apply filtering
+    List<NewsWithScore> filtered = [];
+    log("Selected is ${selectedFilter} ${selectedFilter == "Institutes"}");
+    switch (selectedFilter) {
+      case "City":
+        filtered = newsList.where((news) => news.city == city).toList();
+        break;
+
+      case "State":
+        filtered = newsList.where((news) => news.state == state).toList();
+        break;
+
+      case "Country":
+        filtered = newsList.where((news) => news.country == country).toList();
+        break;
+
+      case "World":
+        filtered = newsList;
+        break;
+
+      case "Recent":
+        filtered = List<NewsWithScore>.from(newsList)
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Latest first
+        break;
+
+      case "Popular":
+        filtered = List<NewsWithScore>.from(newsList)
+          ..sort((a, b) => b.score.compareTo(a.score)); // Highest score first
+        break;
+
+      case "Institutions":
+        filtered =
+            newsList.where((news) => news.category == "Institutes").toList();
+        break;
+      case "Events":
+        controller.fetchAllEvents();
+        break;
+
+      default:
+        filtered = List<NewsWithScore>.from(newsList)
+          ..sort((a, b) => b.score.compareTo(a.score));
+        break;
+    }
+
+    // Update the filtered list
+    filteredNews.value = filtered;
+  }
 
   void loadMarkers() async {
     final updatedMarkers = <Marker>{}; // Temporary set to hold markers
@@ -62,10 +124,8 @@ class HomeController extends GetxController {
     } else {
       selectedNewsType.value = newValue;
     }
-    fetchNews();
+    filterNews();
   }
-
-  var newsList = <NewsWithScore>[].obs;
 
   var filteredNewsList = <NewsWithScore>[].obs;
 
@@ -87,9 +147,10 @@ class HomeController extends GetxController {
   }
 
   var commentList = <NewsComment>[].obs;
+
   RxBool commentLoading = false.obs;
   final TextEditingController commentController = TextEditingController();
-
+  var commentMap = <String, List<NewsComment>>{}.obs;
   Future<void> addComment(String newsId) async {
     var requestedBody = {
       "content": commentController.text,
@@ -99,8 +160,15 @@ class HomeController extends GetxController {
       CustomLoadingDialog.showCustomLoadingDialog("Adding Comment...");
       final response =
           await ApiClient().post(ApiEndPoints.addNewsComment, requestedBody);
+      log("Response is $response");
+      commentList.value = (response["updatedComments"] as List)
+          .map((comment) => NewsComment.fromJson(comment))
+          .toList();
+      commentMap[newsId] = commentList;
+      log("updated map ${commentMap[newsId]}");
       commentController.clear();
-      await fetchComments(newsId);
+
+      // await fetchComments(newsId);
       CustomLoadingDialog.closeLoadingDialog();
     } catch (e) {
       CustomLoadingDialog.closeLoadingDialog();
@@ -138,15 +206,26 @@ class HomeController extends GetxController {
       mapLoading.value = true;
       newsList.clear();
       newLocation.clear();
+
       log("News type is ${selectedNewsType.value}");
-      final response = await ApiClient().get(ApiEndPoints.getNews(
-          newsType: selectedNewsType.value, category: category));
+
+      final response = await ApiClient().get(ApiEndPoints.getNews());
+
       log("Response is $response");
 
       newsList.value = (response["newsWithScores"] as List<dynamic>)
           .map((news) => NewsWithScore.fromJson(news))
           .toList();
+
       isLoading.value = false;
+
+      log("Category is $category");
+
+      if (category == "Institutes") {
+        selectedNewsType.value = "Institutions";
+      }
+
+      filterNews();
       applyNewsFilter();
       if (category == "News") {
         final List<NewsWithScore> sortedNewsList = List<NewsWithScore>.from(
@@ -154,7 +233,6 @@ class HomeController extends GetxController {
           ..sort(
               (a, b) => b.score.compareTo(a.score)); // Sort by score descending
 
-        // Take top 4 scorers
         final top4News = sortedNewsList.take(4);
 
         // Create a list of LatLng for the top 4
@@ -174,6 +252,7 @@ class HomeController extends GetxController {
         }
       }
     } catch (e) {
+      log("Error is $e");
       ShortMessageUtils.showError("$e");
     } finally {
       mapLoading.value = false;
@@ -183,6 +262,7 @@ class HomeController extends GetxController {
   Future<void> fetchComments(String newsId) async {
     try {
       commentLoading.value = true;
+      commentList.clear();
       final response =
           await ApiClient().get(ApiEndPoints.getNewsComments(newsId));
       commentList.value = (response["comments"] as List)

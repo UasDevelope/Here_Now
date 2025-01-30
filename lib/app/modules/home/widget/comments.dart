@@ -239,12 +239,14 @@ Future<void> newsCommentsBottomSheet({
                         ),
                       )
                     : comments.commentList.isEmpty
-                        ? Text(
-                            "No comments yet.",
-                            style: AppStyle.openSans(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                        ? Expanded(
+                            child: Text(
+                              "No comments yet.",
+                              style: AppStyle.openSans(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           )
                         : Expanded(

@@ -6,6 +6,7 @@ import '../../../utils/appstyle.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/date_time_utlisee.dart';
 import '../../../utils/rating_alert.dart';
+import '../../../utils/short_message_utils.dart';
 import '../../../utils/textfiled.dart';
 import '../../events/controller/Events.dart';
 import '../../events/widget/event_shimmer.dart';
@@ -89,13 +90,24 @@ class _SearchScreenState extends State<SearchScreen> {
                                 "${data.location}, ${DateTimeUtils.formatToDmy(data.createdAt)}",
                             postDescription: data.description,
                             postImage: "${data.image}",
-                            likes: data.score,
-                            comments: data.commentsCount,
+                            likes: data.averageRating.toStringAsFixed(1),
+                            comments:
+                                homeController.commentMap[data.id] != null &&
+                                        homeController
+                                            .commentMap[data.id]!.isNotEmpty
+                                    ? homeController.commentMap[data.id]!.length
+                                    : data.commentsCount,
                             onRate: () {
-                              showRatingDialog(homeController.rated,
-                                  homeController.changeRating, () {
-                                homeController.addRating(data.id);
-                              });
+                              if (!data.isRating) {
+                                showRatingDialog(homeController.rated,
+                                    homeController.changeRating, () {
+                                  homeController.addRating(data.id);
+                                });
+                              } else {
+                                ShortMessageUtils.showError(
+                                    "You already added rating to this post");
+                                log("data is ${data.isRating}");
+                              }
                             },
                             onComment: () {
                               homeController.fetchComments(data.id);

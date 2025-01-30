@@ -68,8 +68,8 @@ class Editprofile extends StatelessWidget {
                         },
                         child: CircleAvatar(
                           radius: 50,
-                          backgroundImage: userModel.image == null &&
-                                  controller.imagePath.value == ""
+                          backgroundImage: controller.imagePath.value == "" &&
+                                  userModel.image == null
                               ? AssetImage(Images.person)
                               : userModel.image != null
                                   ? NetworkImage(userModel.image!)

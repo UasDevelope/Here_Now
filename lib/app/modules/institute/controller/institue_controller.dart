@@ -5,12 +5,12 @@ import '../../home/model/news_model.dart';
 
 class InstituteController extends GetxController {
   var newsList = <NewsWithScore>[].obs;
-  Future<void> fetchInstitute() async {
-    try {
-      final response =
-          await ApiClient().get(ApiEndPoints.getNews(category: "Institute"));
-    } catch (e) {
-      ShortMessageUtils.showError("$e");
-    }
-  }
+  // Future<void> fetchInstitute() async {
+  //   try {
+  //     final response =
+  //         await ApiClient().get(ApiEndPoints.getNews();
+  //   } catch (e) {
+  //     ShortMessageUtils.showError("$e");
+  //   }
+  // }
 }

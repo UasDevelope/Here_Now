@@ -12,7 +12,7 @@ class Posts extends StatelessWidget {
   final String postDescription;
   final String postImage;
   final String coordinates;
-  final int likes;
+  final String likes;
   final int comments;
   final VoidCallback? onRate;
   final VoidCallback? onComment;
@@ -29,7 +29,7 @@ class Posts extends StatelessWidget {
         "Donec eleifend hendrerit purus et dignissim. Nunc lacinia lorem ut eros scelerisque, quis semper felis accumsan. Proin tempus dolor ex, at convallis mauris sollicitudin sit amet.",
     this.postImage = "",
     this.coordinates = "41.9028° N 12.4964° E",
-    this.likes = 555,
+    this.likes = "555",
     this.comments = 72,
     this.onRate,
     this.onComment,

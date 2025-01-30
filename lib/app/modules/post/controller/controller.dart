@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:intl/intl.dart';
+import '../../../controllers/controller_locator.dart';
 import '../../../routes/routes.dart';
 import '../../../utils/api_utils.dart';
 import '../../../utils/image_utils.dart';
@@ -82,8 +83,10 @@ class PostController extends GetxController {
   }
 
   Future<void> createNewsPost() async {
+    final controller = ControllerLocator.locationController;
+
     CustomLoadingDialog.showCustomLoadingDialog("Creating News Post....");
-    Map<String, dynamic> location = await LocationService.getCurrentLocation();
+    Map<String, dynamic> locationName = controller.userLocation;
     if (imagePath.isNotEmpty) {
       imageUrl.value =
           await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
@@ -92,12 +95,15 @@ class PostController extends GetxController {
       "image": imageUrl.value,
       "title": titleController.text,
       "description": descriptionController.text,
-      "lat": location['lat'],
-      "long": location["lng"],
-      "location": location['locationName'],
+      "lat": controller.latitude.value,
+      "long": controller.longitude.value,
+      "location": locationName["locationName"],
+      "city": locationName["city"],
+      "country": locationName["country"],
+      "state": locationName["state"],
       "video": "videoUrl",
       "category": selectedCategory.value,
-      "typeNews": selectedNews.value
+      "typeNews": "selectedNews.value"
     };
     try {
       final response = await ApiClient().post(ApiEndPoints.addNews, body);
@@ -107,27 +113,38 @@ class PostController extends GetxController {
       clearEvents();
       Get.offNamed(Routes.bottomNav);
     } catch (e) {
+      CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showError("$e");
     }
   }
 
   Future<void> createEventPost() async {
-    Map<String, dynamic> location = await LocationService.getCurrentLocation();
+    final controller = ControllerLocator.locationController;
+
+    CustomLoadingDialog.showCustomLoadingDialog("Creating Event Post....");
+    Map<String, dynamic> locationName = controller.userLocation;
+    if (imagePath.isNotEmpty) {
+      imageUrl.value =
+          await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
+    }
     var body = {
       "title": titleController.text,
       "description": descriptionController.text,
-      "image": "https://placehold.co/600x400/orange/white",
+      "image": imageUrl.value,
       "video": "videoUrl",
-      "lat": location['lat'],
-      "long": location["lng"],
-      "location": location['locationName'],
+      "lat": controller.latitude.value,
+      "long": controller.longitude.value,
+      "location": locationName["locationName"],
+      "city": locationName["city"],
+      "country": locationName["country"],
+      "state": locationName["state"],
       "contact": contactController.text,
       "price": priceController.text,
       "startDate": startDate.value,
       "endDate": endDate.value,
     };
     try {
-      CustomLoadingDialog.showCustomLoadingDialog("Creating post....");
+      // CustomLoadingDialog.showCustomLoadingDialog("Creating post....");
       final response = await ApiClient().post(ApiEndPoints.createEvent, body);
       log("Response is $response");
       CustomLoadingDialog.closeLoadingDialog();
@@ -135,6 +152,7 @@ class PostController extends GetxController {
       clearEvents();
       Get.offNamed(Routes.bottomNav);
     } catch (e) {
+      CustomLoadingDialog.closeLoadingDialog();
       log("Error$e");
     } finally {}
   }

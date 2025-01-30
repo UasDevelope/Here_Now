@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/home/widget/home_header.dart';
 import 'package:here_now/app/utils/date_time_utlisee.dart';
+import 'package:here_now/app/utils/short_message_utils.dart';
 import '../../../utils/widgets.dart';
 import '../../events/widget/event_shimmer.dart';
 import '../../home/widget/posts.dart';
@@ -13,6 +13,7 @@ class InstituteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = ControllerLocator.homeController;
+
     homeController.fetchNews(category: "Institutes");
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -37,7 +38,7 @@ class InstituteScreen extends StatelessWidget {
               Obx(() {
                 if (homeController.isLoading.value) {
                   return EventPostsShimmer();
-                } else if (homeController.newsList.isEmpty) {
+                } else if (homeController.filteredNews.isEmpty) {
                   return Text(
                     "No Institutes exist",
                     style: AppStyle.openSans(
@@ -49,10 +50,10 @@ class InstituteScreen extends StatelessWidget {
                   return ListView.builder(
                       physics: ScrollPhysics(),
                       padding: EdgeInsets.zero,
-                      itemCount: homeController.newsList.length,
+                      itemCount: homeController.filteredNews.length,
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
-                        final data = homeController.newsList[index];
+                        final data = homeController.filteredNews[index];
                         String latDirection = data.lat >= 0 ? "N" : "S";
                         String lonDirection = data.long >= 0 ? "E" : "W";
                         String formattedLat =
@@ -69,13 +70,22 @@ class InstituteScreen extends StatelessWidget {
                               "${data.location}, ${DateTimeUtils.formatToDmy(data.createdAt)}",
                           postDescription: data.description,
                           postImage: "${data.image}",
-                          likes: data.score,
-                          comments: data.commentsCount,
+                          likes: data.averageRating.toStringAsFixed(1),
+                          comments: homeController.commentMap[data.id] !=
+                                      null &&
+                                  homeController.commentMap[data.id]!.isNotEmpty
+                              ? homeController.commentMap[data.id]!.length
+                              : data.commentsCount,
                           onRate: () {
-                            showRatingDialog(homeController.rated,
-                                homeController.changeRating, () {
-                              homeController.addRating(data.id);
-                            });
+                            if (!data.isRating) {
+                              showRatingDialog(homeController.rated,
+                                  homeController.changeRating, () {
+                                homeController.addRating(data.id);
+                              });
+                            } else {
+                              ShortMessageUtils.showError(
+                                  "You already added rating to this post");
+                            }
                           },
                           onComment: () {
                             homeController.fetchComments(data.id);

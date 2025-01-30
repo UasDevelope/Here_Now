@@ -155,57 +155,57 @@ class Postscreen extends StatelessWidget {
                               ),
 
                               // Show News Type dropdown only when there are news type options available
-                              if (controller.currentNewsTypeOptions.isNotEmpty)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Select News Type:",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey,
-                                            width: 1), // Border added
-                                        borderRadius: BorderRadius.circular(
-                                            10), // Rounded corners
-                                        color: Colors
-                                            .white, // Background color for better contrast
-                                      ),
-                                      child: DropdownButton<String>(
-                                        dropdownColor: AppColors.white,
-                                        value: controller
-                                                .selectedNews.value.isEmpty
-                                            ? null
-                                            : controller.selectedNews
-                                                .value, // Selected news type
-                                        hint: const Text("Select News Type"),
-                                        isExpanded: true,
-                                        underline:
-                                            const SizedBox(), // Removes the default underline
-                                        onChanged: (String? newValue) {
-                                          if (newValue != null) {
-                                            controller
-                                                .updateSelectedNews(newValue);
-                                          }
-                                        },
-                                        items: controller.currentNewsTypeOptions
-                                            .map((String newsType) {
-                                          return DropdownMenuItem<String>(
-                                            value: newsType,
-                                            child: Text(newsType),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              // if (controller.currentNewsTypeOptions.isNotEmpty)
+                              //   Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     children: [
+                              //       const Text(
+                              //         "Select News Type:",
+                              //         style: TextStyle(
+                              //             fontSize: 16,
+                              //             fontWeight: FontWeight.bold),
+                              //       ),
+                              //       const SizedBox(height: 10),
+                              //       Container(
+                              //         padding: const EdgeInsets.symmetric(
+                              //             horizontal: 12),
+                              //         decoration: BoxDecoration(
+                              //           border: Border.all(
+                              //               color: Colors.grey,
+                              //               width: 1), // Border added
+                              //           borderRadius: BorderRadius.circular(
+                              //               10), // Rounded corners
+                              //           color: Colors
+                              //               .white, // Background color for better contrast
+                              //         ),
+                              //         child: DropdownButton<String>(
+                              //           dropdownColor: AppColors.white,
+                              //           value: controller
+                              //                   .selectedNews.value.isEmpty
+                              //               ? null
+                              //               : controller.selectedNews
+                              //                   .value, // Selected news type
+                              //           hint: const Text("Select News Type"),
+                              //           isExpanded: true,
+                              //           underline:
+                              //               const SizedBox(), // Removes the default underline
+                              //           onChanged: (String? newValue) {
+                              //             if (newValue != null) {
+                              //               controller
+                              //                   .updateSelectedNews(newValue);
+                              //             }
+                              //           },
+                              //           items: controller.currentNewsTypeOptions
+                              //               .map((String newsType) {
+                              //             return DropdownMenuItem<String>(
+                              //               value: newsType,
+                              //               child: Text(newsType),
+                              //             );
+                              //           }).toList(),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
                               Text(
                                 AppString.title,
                                 style: AppStyle.openSans(

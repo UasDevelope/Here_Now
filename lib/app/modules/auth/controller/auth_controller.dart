@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:here_now/app/controllers/controller_locator.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
 import 'package:here_now/app/utils/api_utils.dart';
 import 'package:here_now/app/utils/location_utils.dart';
@@ -47,18 +48,17 @@ class AuthController extends GetxController {
   Future<void> registerUser() async {
     try {
       if (globalFormKey.currentState!.validate()) {
+        final controller = ControllerLocator.locationController;
         CustomLoadingDialog.showCustomLoadingDialog(
             "Creating user account....");
-        Map<String, dynamic> location =
-            await LocationService.getCurrentLocation();
         final Map<String, dynamic> payload = {
           "firstName": firstNameController.text.trim(),
           "lastName": lastNameController.text.trim(),
           "email": emailController.text.trim(),
           "password": passwordController.text.trim(),
-          "lat": location['lat'],
-          "long": location['lng'],
-          "locationName": location['locationName'],
+          "lat": controller.latitude.value,
+          "long": controller.longitude.value,
+          "locationName": controller.userLocation['locationName'],
         };
         String endPoint = ApiEndPoints.register;
         final response = await ApiClient().post(endPoint, payload);

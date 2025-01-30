@@ -24,6 +24,12 @@ class HomeHeader extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                final newsController = ControllerLocator.homeController;
+                if (isNews) {
+                  newsController.changeSelectedNewsType("");
+                  newsController.filteredNewsList.value =
+                      newsController.newsList;
+                }
                 Get.toNamed(Routes.search, arguments: {"isNews": isNews});
               },
               child: Image.asset(

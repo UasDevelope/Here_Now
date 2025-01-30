@@ -34,11 +34,8 @@ class ApiEndPoints {
     return "$events/getComments/$eventId";
   }
 
-  static String getNews({String newsType = "", String category = "News"}) {
-    String url = "$news/getAllNews?category=$category";
-    if (newsType.isNotEmpty) {
-      url += "&typeNews=$newsType";
-    }
+  static String getNews() {
+    String url = "$news/getAllNews";
     return url;
   }
 
@@ -48,7 +45,7 @@ class ApiEndPoints {
 }
 
 class ApiClient {
-  static const String _defaultBaseUrl = "https://here-now-nine.vercel.app";
+  static const String _defaultBaseUrl = "https://here-now-2.vercel.app";
   final String baseUrl;
 
   ApiClient({this.baseUrl = _defaultBaseUrl});

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:here_now/app/controllers/location.dart';
 import 'package:here_now/app/modules/bottom/controller/bottom_nav.dart';
 import 'package:here_now/app/modules/events/controller/Events.dart';
 import 'package:here_now/app/modules/home/controller/home.dart';
@@ -16,9 +17,9 @@ class InitialBinding extends Bindings {
     Get.lazyPut(() => EventsController());
     Get.lazyPut(() => HomeController());
     Get.lazyPut(() => AuthController());
-    Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => PostController());
     Get.lazyPut(() => ProfileController());
     Get.lazyPut(() => SearchScreenController());
+    Get.lazyPut(() => LocationController());
   }
 }
