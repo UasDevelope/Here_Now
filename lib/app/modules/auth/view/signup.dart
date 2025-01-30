@@ -42,7 +42,7 @@ class SignupScreen extends StatelessWidget {
                       fontSize: 12, fontWeight: FontWeight.w800),
                 ),
                 Row(
-                  spacing: 20,
+                  spacing: 10,
                   children: [
                     AppTextField(
                       width: Get.width / 2.3,

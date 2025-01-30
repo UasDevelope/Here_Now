@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:here_now/app/modules/profile/widget/profile_shimmer_effect.dart';
 import 'package:here_now/app/utils/image_utils.dart';
 import '../../../utils/widgets.dart';
@@ -8,7 +9,7 @@ import '../../../utils/widgets.dart';
 class Postscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = ControllerLocator.profileController;
+    final user = Get.put(ProfileController());
     final controller = ControllerLocator.postController;
     return Obx(() => Scaffold(
           backgroundColor: AppColors.white,
