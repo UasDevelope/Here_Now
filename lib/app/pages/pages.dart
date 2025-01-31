@@ -3,6 +3,7 @@ import 'package:here_now/app/bindings/initial_binding.dart';
 import 'package:here_now/app/modules/auth/view/login.dart';
 import 'package:here_now/app/modules/auth/view/signup.dart';
 import 'package:here_now/app/modules/bottom/view/bottom_nav.dart';
+import 'package:here_now/app/modules/home/widget/full_screen_image_view.dart';
 import 'package:here_now/app/modules/profile/view/editprofile.dart';
 import 'package:here_now/app/modules/profile/view/profiile.dart';
 import 'package:here_now/app/modules/profile/widget/AboutAppPage.dart';
@@ -36,5 +37,7 @@ class AppPages {
     GetPage(name: Routes.privacyPolicy, page: () => PrivacyPolicyPage()),
     GetPage(name: Routes.aboutApp, page: () => AboutAppPage()),
     GetPage(name: Routes.editprofile, page: () => Editprofile()),
+    GetPage(
+        name: Routes.fullScreenImageView, page: () => FullScreenImageViewer()),
   ];
 }

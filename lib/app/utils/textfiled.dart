@@ -22,12 +22,17 @@ class AppTextField extends StatelessWidget {
   final Function()? onSuffixTap;
   final int maxline;
   final bool isAutoFocus;
+  final bool readOnly;
+  final VoidCallback? onTap;
   final String? Function(String?)? validator;
+
   const AppTextField({
     Key? key,
     required this.width,
     required this.height,
     this.isAutoFocus = false,
+    this.readOnly = false,
+    this.onTap,
     required this.hintText,
     required this.controller,
     this.validator,
@@ -40,7 +45,7 @@ class AppTextField extends StatelessWidget {
     this.borderColor = Colors.grey,
     this.borderRadius = 8.0,
     this.borderWidth = 1.0,
-    this.maxline = 1, // default to 1
+    this.maxline = 1,
     this.padding = const EdgeInsets.symmetric(horizontal: 12.0),
     this.onChanged,
     this.prefixIcon,
@@ -54,6 +59,8 @@ class AppTextField extends StatelessWidget {
       width: width,
       height: height,
       child: TextFormField(
+        onTap: onTap,
+        readOnly: readOnly,
         autofocus: isAutoFocus,
         validator: validator,
         maxLines: obscureText

@@ -12,4 +12,5 @@ class Routes {
   static String get privacyPolicy => '/privacyPolicy'; // Privacy Policy route
   static String get aboutApp => '/aboutApp'; // About App screen route
   static String get editprofile => '/editprofile';
+  static String get fullScreenImageView => '/fullScreenImageView';
 }

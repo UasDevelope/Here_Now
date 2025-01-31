@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:developer' as lg;
 
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
@@ -40,7 +41,7 @@ class LocationService {
         String state = placemark.administrativeArea ?? "Unknown State";
         String country = placemark.country ?? "Unknown Country";
 
-        String locationName = "$city, $country";
+        String locationName = placemark.name ?? "";
 
         // Log the location details
         lg.log(
@@ -66,6 +67,25 @@ class LocationService {
       // CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showError("Failed to fetch location: $e");
       throw Exception("Failed to fetch location: $e");
+    }
+  }
+
+  static Future<Map<String, dynamic>> getAddressFromCoordinates(
+      double lat, double lng) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      lat,
+      lng,
+    );
+    if (placemarks.isNotEmpty) {
+      Placemark place = placemarks.first;
+      return {
+        'city': place.locality ?? '',
+        'state': place.administrativeArea ?? '',
+        'country': place.country ?? '',
+        'locationName': place.name ?? "",
+      };
+    } else {
+      return {};
     }
   }
 }

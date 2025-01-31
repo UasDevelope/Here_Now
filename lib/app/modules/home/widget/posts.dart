@@ -53,7 +53,9 @@ class Posts extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20, // Size of the circular image
-                  backgroundImage: AssetImage(userAvatar),
+                  backgroundImage: userAvatar.contains("https")
+                      ? NetworkImage(userAvatar)
+                      : AssetImage(userAvatar),
                 ),
                 const SizedBox(
                     width: 10), // Add spacing between the image and name
@@ -98,37 +100,43 @@ class Posts extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 3),
-            Container(
-              height: MediaQuery.of(context).size.height / 6,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7),
-                image: DecorationImage(
-                  image: postImage == "" || postImage == "null"
-                      ? AssetImage(Images.posts)
-                      : NetworkImage(postImage),
-                  fit: BoxFit.cover,
+            GestureDetector(
+              onTap: () {
+                log("Post Image is $postImage");
+                Get.toNamed(Routes.fullScreenImageView, arguments: postImage);
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height / 4,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7),
+                  image: DecorationImage(
+                    image: postImage == "" || postImage == "null"
+                        ? AssetImage(Images.posts)
+                        : NetworkImage(postImage),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      coordinates,
-                      style: AppStyle.openSans(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        coordinates,
+                        style: AppStyle.openSans(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
-                  ),
-                  Image.asset(
-                    thumbIcon,
-                    height: 30,
-                  ),
-                ],
+                    Image.asset(
+                      thumbIcon,
+                      height: 30,
+                    ),
+                  ],
+                ),
               ),
             ),
             Row(

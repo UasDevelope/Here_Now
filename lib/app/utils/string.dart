@@ -17,6 +17,8 @@ class AppString {
   static String get description => 'Description';
   static String get typesomething => 'Type something here..';
   static String get title => 'Title';
+  static String get location => 'Location';
+  static String get confirmLocation => 'Location';
   static String get postnow => 'Post Now';
   static String get settings => 'Settings';
   static String get logout => 'Logout';
@@ -26,8 +28,8 @@ class AppString {
   static String get privacypolicy => 'Privacy Policy';
   static String get aboutapp => 'About App';
   static String get editprofile => 'Edit Profile';
-  static String get contantno=>'Contact';
-  static String get savechanges=>'Save Changes';
-  static String get addyourrating=>'Add Rating';
+  static String get contantno => 'Contact';
+  static String get savechanges => 'Save Changes';
+  static String get addyourrating => 'Add Rating';
   static String get price => "Price";
 }

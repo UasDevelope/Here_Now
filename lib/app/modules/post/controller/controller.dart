@@ -3,7 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
+import 'package:here_now/app/utils/appstyle.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../../controllers/controller_locator.dart';
 import '../../../routes/routes.dart';
@@ -48,6 +50,41 @@ class PostController extends GetxController {
 
   RxString imageUrl = "".obs;
 
+  void showImageSourceDialog() {
+    Get.defaultDialog(
+      title: 'Pick an image',
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(Icons.camera_alt),
+            title: Text(
+              'Use Camera',
+              style: AppStyle.openSans(),
+            ),
+            onTap: () {
+              ImageUtils.pickAndUpdateImage(imagePath,
+                  source: ImageSource.camera);
+              Get.back();
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.photo_library),
+            title: Text(
+              'Use Gallery',
+              style: AppStyle.openSans(),
+            ),
+            onTap: () {
+              ImageUtils.pickAndUpdateImage(imagePath,
+                  source: ImageSource.gallery);
+              Get.back();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   final RxString selectedCategory = "Events".obs; // Default selected category
   final RxString selectedNews = "".obs; // Default selected news type
 
@@ -56,8 +93,12 @@ class PostController extends GetxController {
       []; // Get news types for the selected category
 
   void updateSelectedCategory(String value) {
+    if (value == "Events") {
+      showImageSourceDialog();
+    } else if (value == "News") {
+      ImageUtils.pickAndUpdateImage(imagePath, source: ImageSource.camera);
+    }
     selectedCategory.value = value;
-    selectedNews.value = ""; // Reset selected news type when category changes
   }
 
   void updateSelectedNews(String value) {
@@ -86,7 +127,7 @@ class PostController extends GetxController {
     final controller = ControllerLocator.locationController;
 
     CustomLoadingDialog.showCustomLoadingDialog("Creating News Post....");
-    Map<String, dynamic> locationName = controller.userLocation;
+    Map<String, dynamic> locationName = controller.selectedLocation;
     if (imagePath.isNotEmpty) {
       imageUrl.value =
           await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
@@ -111,7 +152,9 @@ class PostController extends GetxController {
       CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showSuccess("${response["message"]}");
       clearEvents();
-      Get.offNamed(Routes.bottomNav);
+      final bottomNavController = ControllerLocator.bottomNavController;
+      bottomNavController.changeIndex(0);
+      // Get.offNamed(Routes.bottomNav);
     } catch (e) {
       CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showError("$e");
@@ -122,7 +165,7 @@ class PostController extends GetxController {
     final controller = ControllerLocator.locationController;
 
     CustomLoadingDialog.showCustomLoadingDialog("Creating Event Post....");
-    Map<String, dynamic> locationName = controller.userLocation;
+    Map<String, dynamic> locationName = controller.selectedLocation;
     if (imagePath.isNotEmpty) {
       imageUrl.value =
           await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
@@ -150,7 +193,8 @@ class PostController extends GetxController {
       CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showSuccess("${response["message"]}");
       clearEvents();
-      Get.offNamed(Routes.bottomNav);
+      final bottomNavController = ControllerLocator.bottomNavController;
+      bottomNavController.changeIndex(1);
     } catch (e) {
       CustomLoadingDialog.closeLoadingDialog();
       log("Error$e");

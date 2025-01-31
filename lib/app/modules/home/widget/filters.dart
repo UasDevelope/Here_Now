@@ -5,14 +5,13 @@ import '../../../utils/widgets.dart';
 class TextGridView extends StatelessWidget {
   final List<String> items = [
     "City",
-    'Country',
+    "Country",
     "State",
-    // "Nation",
     "World",
-    "Recent",
     "Popular",
-    "Events",
-    "Institutions",
+    "Recent",
+    // "Events",
+    // "Institutions",
   ];
 
   @override
@@ -24,28 +23,42 @@ class TextGridView extends StatelessWidget {
         child: GridView.builder(
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5, // Number of columns in the grid
-              crossAxisSpacing: 10, // Horizontal spacing between grid items
-              mainAxisSpacing: 10, // Vertical spacing between grid items
-              childAspectRatio: 3),
+            crossAxisCount: 4, // Number of columns in the grid
+            crossAxisSpacing: 10, // Horizontal spacing between grid items
+            mainAxisSpacing: 10, // Vertical spacing between grid items
+            childAspectRatio: 3, // Aspect ratio for each item
+          ),
           itemCount: items.length,
           padding: const EdgeInsets.all(10),
           itemBuilder: (context, index) {
-            return Obx(() => GestureDetector(
-                  onTap: () {
-                    homeController.changeSelectedNewsType(items[index]);
-                  },
+            return Obx(() {
+              final isSelected =
+                  homeController.selectedNewsType.contains(items[index]);
+
+              return GestureDetector(
+                onTap: () {
+                  homeController.changeSelectedNewsType(items[index]);
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.black : Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isSelected ? Colors.white : Colors.transparent,
+                    ),
+                  ),
                   child: Text(
                     items[index],
                     style: AppStyle.openSans(
-                        color: homeController.selectedNewsType.value ==
-                                items[index]
-                            ? Colors.black
-                            : AppColors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800),
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ));
+                ),
+              );
+            });
           },
         ),
       ),

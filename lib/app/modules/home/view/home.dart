@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
               HomeHeader(),
               Container(
                 decoration: BoxDecoration(color: AppColors.appColor),
-                height: 70,
+                height: 82,
                 child: TextGridView(),
               ),
               Obx(() {
@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                 }
               }),
               Obx(() {
-                if (homeController.selectedNewsType.value != "Events") {
+                if (!homeController.selectedNewsType.contains("Events")) {
                   if (homeController.isLoading.value) {
                     return SizedBox(
                         height: Get.height / 2.1, child: EventPostsShimmer());

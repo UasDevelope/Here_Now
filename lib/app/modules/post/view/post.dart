@@ -3,14 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:here_now/app/modules/profile/widget/profile_shimmer_effect.dart';
-import 'package:here_now/app/utils/image_utils.dart';
 import '../../../utils/widgets.dart';
+import '../widget/location_picker_bottom_sheet.dart';
 
 class Postscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Get.put(ProfileController());
     final controller = ControllerLocator.postController;
+    final locationController = ControllerLocator.locationController;
     return Obx(() => Scaffold(
           backgroundColor: AppColors.white,
           body: user.isLoading.value
@@ -95,8 +96,7 @@ class Postscreen extends StatelessWidget {
 
                               InkWell(
                                 onTap: () {
-                                  ImageUtils.pickAndUpdateImage(
-                                      controller.imagePath);
+                                  controller.showImageSourceDialog();
                                 },
                                 child: Text(
                                   AppString.addpicturevides,
@@ -335,9 +335,32 @@ class Postscreen extends StatelessWidget {
                                   obscureText: false,
                                   maxline: 6,
                                   width: Get.width,
-                                  height: Get.height / 2.8,
+                                  height: Get.height / 5.9,
                                   hintText: AppString.typesomething,
                                   controller: controller.descriptionController),
+                              Text(
+                                AppString.location,
+                                style: AppStyle.openSans(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                              AppTextField(
+                                  readOnly: true,
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                      LocationPickerBottomSheet(),
+                                      isScrollControlled:
+                                          true, // To make sure the bottom sheet is not full height
+                                    );
+                                  },
+                                  obscureText: false,
+                                  maxline: 4,
+                                  width: Get.width,
+                                  height: Get.height / 18,
+                                  hintText: AppString.location,
+                                  controller:
+                                      locationController.locationController),
                               Center(
                                 child: AppButton(
                                   height: 50,
@@ -357,7 +380,7 @@ class Postscreen extends StatelessWidget {
                                     // Get.toNamed(Routes.bottomNav);
                                   },
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         )

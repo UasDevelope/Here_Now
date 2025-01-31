@@ -33,8 +33,8 @@ class HomeController extends GetxController {
   var filteredNews = <NewsWithScore>[].obs;
 
   Future<void> filterNews() async {
-    // Retrieve selected filter type
-    String selectedFilter = selectedNewsType.value;
+    // Retrieve selected filter types (multiple)
+    List<String> selectedFilters = selectedNewsType;
     Map<String, dynamic> location = locationController.userLocation;
     final controller = ControllerLocator.eventsController;
 
@@ -44,50 +44,51 @@ class HomeController extends GetxController {
     String country = location["country"] ?? "";
 
     // Apply filtering
-    List<NewsWithScore> filtered = [];
-    log("Selected is ${selectedFilter} ${selectedFilter == "Institutes"}");
-    switch (selectedFilter) {
-      case "City":
-        filtered = newsList.where((news) => news.city == city).toList();
-        break;
+    List<NewsWithScore> filtered = newsList;
 
-      case "State":
-        filtered = newsList.where((news) => news.state == state).toList();
-        break;
+    // If location-based filters are selected, filter by them
+    bool hasLocationFilters = selectedFilters.any(
+      (filter) => ["City", "State", "Country", "World"].contains(filter),
+    );
 
-      case "Country":
-        filtered = newsList.where((news) => news.country == country).toList();
-        break;
+    if (hasLocationFilters) {
+      filtered = filtered.where((news) {
+        bool matches = false;
 
-      case "World":
-        filtered = newsList;
-        break;
+        if (selectedFilters.contains("City") && news.city == city) {
+          matches = true;
+        }
+        if (selectedFilters.contains("State") && news.state == state) {
+          matches = true;
+        }
+        if (selectedFilters.contains("Country") && news.country == country) {
+          matches = true;
+        }
+        if (selectedFilters.contains("World")) {
+          matches = true;
+        }
 
-      case "Recent":
-        filtered = List<NewsWithScore>.from(newsList)
-          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Latest first
-        break;
-
-      case "Popular":
-        filtered = List<NewsWithScore>.from(newsList)
-          ..sort((a, b) => b.score.compareTo(a.score)); // Highest score first
-        break;
-
-      case "Institutions":
-        filtered =
-            newsList.where((news) => news.category == "Institutes").toList();
-        break;
-      case "Events":
-        controller.fetchAllEvents();
-        break;
-
-      default:
-        filtered = List<NewsWithScore>.from(newsList)
-          ..sort((a, b) => b.score.compareTo(a.score));
-        break;
+        return matches;
+      }).toList();
     }
 
-    // Update the filtered list
+    // If no location-based filters were applied, keep all news
+    if (!hasLocationFilters) {
+      filtered = List.from(newsList);
+    }
+
+    // Now, apply sorting based on "Recent" and "Popular"
+    if (selectedFilters.contains("Recent")) {
+      log("Sorting by Recent");
+      filtered
+          .sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Latest first
+    }
+    if (selectedFilters.contains("Popular")) {
+      log("Sorting by Popular");
+      filtered
+          .sort((a, b) => b.score.compareTo(a.score)); // Highest score first
+    }
+
     filteredNews.value = filtered;
   }
 
@@ -116,13 +117,13 @@ class HomeController extends GetxController {
     rated.value = rating;
   }
 
-  RxString selectedNewsType = "".obs;
+  RxList<String> selectedNewsType = <String>["World", "Popular"].obs;
 
   void changeSelectedNewsType(String newValue) {
-    if (selectedNewsType.value == newValue) {
-      selectedNewsType.value = "";
+    if (selectedNewsType.contains(newValue)) {
+      selectedNewsType.remove(newValue); // Deselect if already selected
     } else {
-      selectedNewsType.value = newValue;
+      selectedNewsType.add(newValue); // Add to selection if not selected
     }
     filterNews();
   }
@@ -222,7 +223,7 @@ class HomeController extends GetxController {
       log("Category is $category");
 
       if (category == "Institutes") {
-        selectedNewsType.value = "Institutions";
+        selectedNewsType.add("Institutions");
       }
 
       filterNews();
