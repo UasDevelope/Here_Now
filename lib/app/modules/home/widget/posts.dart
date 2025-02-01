@@ -1,10 +1,13 @@
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:here_now/app/utils/widgets.dart';
-
+import 'package:share_plus/share_plus.dart';
 import 'comments.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class Posts extends StatelessWidget {
   final String userName;
@@ -39,26 +42,50 @@ class Posts extends StatelessWidget {
     this.thumbIcon = "assets/images/thumb.png",
   }) : super(key: key);
 
+  Future<void> _sharePost() async {
+    try {
+      if (postImage.isNotEmpty && postImage.startsWith("http")) {
+        // Download the image
+        final response = await http.get(Uri.parse(postImage));
+        final Uint8List bytes = response.bodyBytes;
+
+        // Get a temporary directory
+        final Directory tempDir = await getTemporaryDirectory();
+        final File file = File('${tempDir.path}/shared_image.png');
+
+        // Write the image file
+        await file.writeAsBytes(bytes);
+
+        // Share the image with title & description
+        await Share.shareXFiles([XFile(file.path)],
+            text: "$userName's Post\n\n$postDescription");
+      } else {
+        await Share.share("$userName's Post\n\n$postDescription");
+      }
+    } catch (e) {
+      print("Error sharing post: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     log("Post image is ${postImage == "" || postImage == "null"} $postImage");
     return Container(
-      padding: const EdgeInsets.all(8), // Add some padding for better UI
+      padding: const EdgeInsets.all(8),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start, // Align vertically
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  radius: 20, // Size of the circular image
+                  radius: 20,
                   backgroundImage: userAvatar.contains("https")
                       ? NetworkImage(userAvatar)
-                      : AssetImage(userAvatar),
+                      : AssetImage(userAvatar) as ImageProvider,
                 ),
-                const SizedBox(
-                    width: 10), // Add spacing between the image and name
+                const SizedBox(width: 10),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
@@ -69,6 +96,11 @@ class Posts extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: Icon(Icons.share, color: AppColors.appColor),
+                  onPressed: _sharePost,
                 ),
               ],
             ),
@@ -110,9 +142,9 @@ class Posts extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   image: DecorationImage(
-                    image: postImage == "" || postImage == "null"
-                        ? AssetImage(Images.posts)
-                        : NetworkImage(postImage),
+                    image: postImage.isNotEmpty && postImage != "null"
+                        ? NetworkImage(postImage)
+                        : AssetImage(Images.posts) as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                 ),
