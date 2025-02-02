@@ -20,6 +20,7 @@ void main() async {
 }
 
 void changeStatusBar() {
+  //
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.black,
     statusBarIconBrightness: Brightness.light,
