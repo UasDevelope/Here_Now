@@ -99,7 +99,7 @@ class EventDetailPost extends StatelessWidget {
                         ? NetworkImage("${data.user?.image}")
                         : AssetImage(Images.person),
                   ),
-                  SizedBox(width: 10), // Add spacing between the image and name
+                  SizedBox(width: 10),
                   Padding(
                     padding: EdgeInsets.only(top: 10),
                     child: Text(

@@ -16,6 +16,8 @@ class SplashController extends GetxController {
       String token = PrefUtil.getString(PrefUtil.token);
       print("Token=>${token}");
       if (token == "") {
+        // Get.offAllNamed(Routes.bottomNav);
+
         Get.offAllNamed(Routes.login);
       } else {
         Get.offAllNamed(Routes.bottomNav);

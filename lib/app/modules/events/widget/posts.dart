@@ -46,6 +46,7 @@ class EventPosts extends StatelessWidget {
                     padding: EdgeInsets.only(top: 10),
                     child: Text(
                       // Safely display user name, if available
+
                       "${data.user?.firstName ?? ''} ${data.user?.lastName ?? ''}",
                       style: AppStyle.openSans(
                         color: Colors.black,
@@ -82,11 +83,11 @@ class EventPosts extends StatelessWidget {
               Column(
                 children: [
                   Container(
-                    height: Get.height / 5,
+                    height: Get.height / 1.7,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                         7,
-                      ), // Rounded corners with radius 15
+                      ),
                       image: DecorationImage(
                         image: NetworkImage(data.image),
                         fit: BoxFit

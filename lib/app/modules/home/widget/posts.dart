@@ -131,14 +131,14 @@ class Posts extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const SizedBox(height: 3),
+            SizedBox(height: Get.height * 0.02),
             GestureDetector(
               onTap: () {
                 log("Post Image is $postImage");
                 Get.toNamed(Routes.fullScreenImageView, arguments: postImage);
               },
               child: Container(
-                height: MediaQuery.of(context).size.height / 4,
+                height: Get.height / 1.7,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   image: DecorationImage(
@@ -171,6 +171,7 @@ class Posts extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: Get.height * 0.02),
             Row(
               children: [
                 Text(

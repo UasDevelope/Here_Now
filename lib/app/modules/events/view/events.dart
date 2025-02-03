@@ -14,25 +14,25 @@ class EventScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     EventsController controller = ControllerLocator.eventsController;
 
-    return Scaffold(
-        backgroundColor: AppColors.white,
-        body: Obx(
-          () => controller.loading.value
-              ? EventPostsShimmer()
-              : RefreshIndicator(
-                  onRefresh: () {
-                    return controller.fetchAllEvents();
-                  },
-                  child: Column(
-                    children: [
-                      HomeHeader(
-                        isNews: false,
-                      ),
-                      Container(
-                        height: Get.height / 1.36,
-                        child: ListView.builder(
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: AppColors.white,
+          body: Obx(
+            () => controller.loading.value
+                ? EventPostsShimmer()
+                : RefreshIndicator(
+                    onRefresh: () {
+                      return controller.fetchAllEvents();
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          HomeHeader(
+                            isNews: false,
+                          ),
+                          ListView.separated(
                             padding: EdgeInsets.zero,
-                            physics: AlwaysScrollableScrollPhysics(),
+                            physics: ScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: controller.eventList.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -42,11 +42,19 @@ class EventScreen extends StatelessWidget {
                                 showMap: true,
                                 data: data,
                               );
-                            }),
-                      )
-                    ],
+                            },
+                            separatorBuilder: (context, index) => Divider(
+                              color: Colors.grey, // Set color for the divider
+                              thickness: 1, // Adjust thickness as needed
+                              indent: 16, // Adjust indent for better alignment
+                              endIndent: 16, // Same as indent for symmetry
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-        ));
+          )),
+    );
   }
 }
