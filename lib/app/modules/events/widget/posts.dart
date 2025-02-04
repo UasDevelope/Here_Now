@@ -82,7 +82,7 @@ class EventPosts extends StatelessWidget {
               Column(
                 children: [
                   Container(
-                    height: Get.height / 5,
+                    height: Get.height / 2,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                         7,

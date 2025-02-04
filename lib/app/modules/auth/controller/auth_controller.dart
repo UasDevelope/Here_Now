@@ -4,11 +4,9 @@ import 'package:get/get.dart';
 import 'package:here_now/app/controllers/controller_locator.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
 import 'package:here_now/app/utils/api_utils.dart';
-import 'package:here_now/app/utils/location_utils.dart';
 import 'package:here_now/app/utils/pref_util.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:here_now/main.dart';
-
 import '../../../routes/routes.dart';
 
 class AuthController extends GetxController {
@@ -42,7 +40,9 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       ShortMessageUtils.showError("$e");
-    } finally {}
+    } finally {
+      CustomLoadingDialog.closeLoadingDialog();
+    }
   }
 
   Future<void> registerUser() async {

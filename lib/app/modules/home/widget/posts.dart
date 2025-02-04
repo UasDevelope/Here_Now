@@ -138,7 +138,7 @@ class Posts extends StatelessWidget {
                 Get.toNamed(Routes.fullScreenImageView, arguments: postImage);
               },
               child: Container(
-                height: MediaQuery.of(context).size.height / 4,
+                height: MediaQuery.of(context).size.height / 3,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   image: DecorationImage(
