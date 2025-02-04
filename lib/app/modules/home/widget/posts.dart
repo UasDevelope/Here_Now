@@ -2,12 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:here_now/app/utils/share_util.dart';
 import 'package:here_now/app/utils/widgets.dart';
 import 'package:share_plus/share_plus.dart';
-import 'comments.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'dart:typed_data';
+import 'package:image/image.dart' as img;
 
 class Posts extends StatelessWidget {
   final String userName;
@@ -42,31 +43,6 @@ class Posts extends StatelessWidget {
     this.thumbIcon = "assets/images/thumb.png",
   }) : super(key: key);
 
-  Future<void> _sharePost() async {
-    try {
-      if (postImage.isNotEmpty && postImage.startsWith("http")) {
-        // Download the image
-        final response = await http.get(Uri.parse(postImage));
-        final Uint8List bytes = response.bodyBytes;
-
-        // Get a temporary directory
-        final Directory tempDir = await getTemporaryDirectory();
-        final File file = File('${tempDir.path}/shared_image.png');
-
-        // Write the image file
-        await file.writeAsBytes(bytes);
-
-        // Share the image with title & description
-        await Share.shareXFiles([XFile(file.path)],
-            text: "$userName's Post\n\n$postDescription");
-      } else {
-        await Share.share("$userName's Post\n\n$postDescription");
-      }
-    } catch (e) {
-      print("Error sharing post: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     log("Post image is ${postImage == "" || postImage == "null"} $postImage");
@@ -97,11 +73,11 @@ class Posts extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(Icons.share, color: AppColors.appColor),
-                  onPressed: _sharePost,
-                ),
+                // const Spacer(),
+                // IconButton(
+                //   icon: Icon(Icons.share, color: AppColors.appColor),
+                //   onPressed: _sharePost,
+                // ),
               ],
             ),
             Text(
@@ -205,6 +181,18 @@ class Posts extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                   ),
+                ),
+                SizedBox(
+                  width: Get.height * 0.01,
+                ),
+                IconButton(
+                  icon: Icon(Icons.share, color: Colors.black),
+                  onPressed: () {
+                    ShareUtil.sharePost(
+                        postImageUrl: postImage,
+                        userName: userName,
+                        postDescription: postDescription);
+                  },
                 ),
               ],
             )

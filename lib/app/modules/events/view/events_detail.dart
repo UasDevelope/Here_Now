@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/events/model/comment_model.dart';
 import 'package:here_now/app/modules/events/model/event_model.dart';
 import 'package:intl/intl.dart';
+import '../../../utils/share_util.dart';
 import '../../../utils/widgets.dart';
 import '../widget/button.dart';
 import '../widget/map.dart';
@@ -112,11 +113,7 @@ class EventDetailPost extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.share, color: AppColors.appColor),
-                    onPressed: _sharePost,
-                  ),
+
                 ],
               ),
               Text(
@@ -285,7 +282,18 @@ class EventDetailPost extends StatelessWidget {
                       style: AppStyle.openSans(
                           color: Colors.black,
                           fontSize: 12,
-                          fontWeight: FontWeight.w800))
+                          fontWeight: FontWeight.w800)),
+                  SizedBox(
+                    width: Get.height * 0.01,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.share, color: Colors.black),
+                    onPressed: (){
+                      ShareUtil.sharePost(postImageUrl: data.image,
+                          userName: "${data.user!.firstName} ${data.user!.lastName}",
+                          postDescription: data.description);
+                    },
+                  ),
                 ],
               ),
             ],
