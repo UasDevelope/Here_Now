@@ -7,6 +7,7 @@ import 'package:here_now/app/utils/image_utils.dart';
 import 'package:here_now/app/utils/validator_utils.dart';
 
 import '../../../utils/widgets.dart';
+import '../controller/profile_controller.dart';
 
 class Editprofile extends StatelessWidget {
   const Editprofile({super.key});
@@ -14,7 +15,7 @@ class Editprofile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final arguments = Get.arguments;
-    final controller = ControllerLocator.profileController;
+    final controller = Get.put(ProfileController());
     log("Arguments ${arguments["data"]}");
     UserModel userModel = arguments["data"] as UserModel;
     log("User name ${userModel.firstName}");

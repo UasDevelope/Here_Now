@@ -82,7 +82,7 @@ class EventPosts extends StatelessWidget {
               Column(
                 children: [
                   Container(
-                    height: Get.height / 2,
+                    height: Get.height / 1.5,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                         7,
@@ -98,7 +98,7 @@ class EventPosts extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding:EdgeInsets.all(8.0),
                           child: Text(
                             data.location,
                             style: AppStyle.openSans(

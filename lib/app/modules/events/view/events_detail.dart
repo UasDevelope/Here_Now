@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/events/model/comment_model.dart';
 import 'package:here_now/app/modules/events/model/event_model.dart';
+import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:intl/intl.dart';
 import '../../../utils/share_util.dart';
 import '../../../utils/widgets.dart';
@@ -20,7 +21,7 @@ class EventDetailPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
-    final userController = ControllerLocator.profileController;
+    final userController = Get.put(ProfileController());
     Future<void> _sharePost() async {
       try {
         CustomLoadingDialog.showCustomLoadingDialog("Sharing post.....");
