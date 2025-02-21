@@ -118,42 +118,42 @@ class Postscreen extends StatelessWidget {
                                       height: 40,
                                     )),
 
-                              Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.grey,
-                                      width: 1), // Add border
-                                  borderRadius: BorderRadius.circular(
-                                      10), // Rounded corners
-                                  color: Colors
-                                      .white, // Background color for better contrast
-                                ),
-                                child: DropdownButton<String>(
-                                  dropdownColor: AppColors.white,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  value: controller.selectedCategory
-                                      .value, // Selected category
-                                  isExpanded: true,
-                                  underline:
-                                      const SizedBox(), // Removes the default underline
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      controller
-                                          .updateSelectedCategory(newValue);
-                                    }
-                                  },
-                                  items: controller.categoryToNewsType.keys
-                                      .map((String category) {
-                                    return DropdownMenuItem<String>(
-                                      value: category,
-                                      child: Text(category),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
+                              // Container(
+                              //   padding:
+                              //       const EdgeInsets.symmetric(horizontal: 12),
+                              //   decoration: BoxDecoration(
+                              //     border: Border.all(
+                              //         color: Colors.grey,
+                              //         width: 1), // Add border
+                              //     borderRadius: BorderRadius.circular(
+                              //         10), // Rounded corners
+                              //     color: Colors
+                              //         .white, // Background color for better contrast
+                              //   ),
+                              //   child: DropdownButton<String>(
+                              //     dropdownColor: AppColors.white,
+                              //     borderRadius: const BorderRadius.all(
+                              //         Radius.circular(10)),
+                              //     value: controller.selectedCategory
+                              //         .value, // Selected category
+                              //     isExpanded: true,
+                              //     underline:
+                              //         const SizedBox(), // Removes the default underline
+                              //     onChanged: (String? newValue) {
+                              //       if (newValue != null) {
+                              //         controller
+                              //             .updateSelectedCategory(newValue);
+                              //       }
+                              //     },
+                              //     items: controller.categoryToNewsType.keys
+                              //         .map((String category) {
+                              //       return DropdownMenuItem<String>(
+                              //         value: category,
+                              //         child: Text(category),
+                              //       );
+                              //     }).toList(),
+                              //   ),
+                              // ),
 
                               // Show News Type dropdown only when there are news type options available
                               // if (controller.currentNewsTypeOptions.isNotEmpty)
@@ -207,6 +207,7 @@ class Postscreen extends StatelessWidget {
                               //       ),
                               //     ],
                               //   ),
+
                               Text(
                                 AppString.title,
                                 style: AppStyle.openSans(

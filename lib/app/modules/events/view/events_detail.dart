@@ -21,36 +21,6 @@ class EventDetailPost extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
     final userController = ControllerLocator.profileController;
-    Future<void> _sharePost() async {
-      try {
-        CustomLoadingDialog.showCustomLoadingDialog("Sharing post.....");
-        String userName =
-            "${data.user?.firstName ?? ''} ${data.user?.lastName ?? ''}";
-        String postDescription = data.description;
-        if (data.image.isNotEmpty && data.image.startsWith("http")) {
-          // Download the image
-          final response = await http.get(Uri.parse(data.image));
-          final Uint8List bytes = response.bodyBytes;
-
-          // Get a temporary directory
-          final Directory tempDir = await getTemporaryDirectory();
-          final File file = File('${tempDir.path}/shared_image.png');
-
-          // Write the image file
-          await file.writeAsBytes(bytes);
-
-          // Share the image with title & description
-          await Share.shareXFiles([XFile(file.path)],
-              text: "$userName's Post\n\n$postDescription");
-        } else {
-          await Share.share("$userName's Post\n\n$postDescription");
-        }
-      } catch (e) {
-        print("Error sharing post: $e");
-      } finally {
-        CustomLoadingDialog.closeLoadingDialog();
-      }
-    }
 
     return Scaffold(
       body: Padding(
@@ -113,7 +83,6 @@ class EventDetailPost extends StatelessWidget {
                       ),
                     ),
                   ),
-
                 ],
               ),
               Text(
@@ -288,9 +257,11 @@ class EventDetailPost extends StatelessWidget {
                   ),
                   IconButton(
                     icon: Icon(Icons.share, color: Colors.black),
-                    onPressed: (){
-                      ShareUtil.sharePost(postImageUrl: data.image,
-                          userName: "${data.user!.firstName} ${data.user!.lastName}",
+                    onPressed: () {
+                      ShareUtil.sharePost(
+                          postImageUrl: data.image,
+                          userName:
+                              "${data.user!.firstName} ${data.user!.lastName}",
                           postDescription: data.description);
                     },
                   ),

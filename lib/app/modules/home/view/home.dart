@@ -38,9 +38,78 @@ class HomeScreen extends StatelessWidget {
                   child: TextGridView(),
                 ),
                 Obx(() {
+                  if (homeController.selectedNewsType.contains("Events")) {
+                    if (controller.loading.value) {
+                      return EventPostsShimmer();
+                    } else {
+                      return RefreshIndicator(
+                        onRefresh: () {
+                          return controller.fetchAllEvents();
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              controller.filteredEvents.isNotEmpty
+                                  ? ListView.separated(
+                                      padding: EdgeInsets.zero,
+                                      physics:
+                                          NeverScrollableScrollPhysics(), // Avoid scrolling issues
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          controller.filteredEvents.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final data =
+                                            controller.filteredEvents[index];
+
+                                        // Add a check to ensure `data` is valid
+                                        if (data == null) {
+                                          return Text(
+                                            "Event data is missing or invalid",
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                        }
+
+                                        return EventPosts(
+                                          showMap: true,
+                                          data: data,
+                                        );
+                                      },
+                                      separatorBuilder: (context, index) =>
+                                          Divider(
+                                        color: Colors
+                                            .grey, // Set color for the divider
+                                        thickness:
+                                            1, // Adjust thickness as needed
+                                        indent:
+                                            16, // Adjust indent for better alignment
+                                        endIndent:
+                                            16, // Same as indent for symmetry
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        "No events found.",
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.grey),
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                  } else {
+                    return SizedBox(); // Fallback when "Events" is not selected
+                  }
+                }),
+                Obx(() {
                   if (homeController.mapLoading.value) {
                     return ShimmerMapContainer();
                   } else if (homeController.filteredNews.isEmpty) {
+                    return Container();
+                  } else if (homeController.selectedNewsType
+                      .contains("Events")) {
                     return Container();
                   } else {
                     return HomeMap();
@@ -57,6 +126,9 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w800),
                     );
+                  } else if (homeController.selectedNewsType
+                      .contains("Events")) {
+                    return Container();
                   } else {
                     return ListView.separated(
                       physics: ScrollPhysics(),

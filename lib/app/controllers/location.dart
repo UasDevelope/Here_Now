@@ -11,6 +11,8 @@ class LocationController extends GetxController {
   RxMap<String, dynamic> userLocation = <String, dynamic>{}.obs;
   RxMap<String, dynamic> selectedLocation = <String, dynamic>{}.obs;
   final TextEditingController locationController = TextEditingController();
+  late GoogleMapController mapController;
+
   Future<void> fetchUserLocation() async {
     Map<String, dynamic> locationName =
         await LocationService.getCurrentLocation();
@@ -31,6 +33,39 @@ class LocationController extends GetxController {
         tappedLatLng.latitude, tappedLatLng.longitude);
     locationController.text = selectedLocation["locationName"];
     log("Selected location is $selectedLocation");
+  }
+
+  Future<void> searchLocation(String query) async {
+    try {
+      final locations = await LocationService.searchLocation(query);
+      if (locations.isNotEmpty) {
+        final location = locations.first;
+        latitude.value = location.latitude;
+        longitude.value = location.longitude;
+        selectedLocation.value =
+            await LocationService.getAddressFromCoordinates(
+          location.latitude,
+          location.longitude,
+        );
+        locationController.text = selectedLocation["locationName"];
+        updateMapCamera();
+      }
+    } catch (e) {
+      log("Error searching location: $e");
+    }
+  }
+
+  void updateMapCamera() {
+    if (mapController != null) {
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(latitude.value, longitude.value),
+            zoom: 14.0,
+          ),
+        ),
+      );
+    }
   }
 
   @override

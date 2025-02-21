@@ -103,14 +103,82 @@ class EventsController extends GetxController {
     }
   }
 
+  final homeController = ControllerLocator.homeController;
+  final locationController = ControllerLocator.locationController;
+
+  var filteredEvents = <Event>[].obs;
+
+  Future<void> filterEvent() async {
+    // Retrieve selected filter types (multiple)
+    List<String> selectedFilters = homeController.selectedNewsType;
+    if (selectedFilters.contains("Events")) {
+      Map<String, dynamic> location = locationController.userLocation;
+      final controller = ControllerLocator.eventsController;
+      // Extract location details
+      String city = location["city"] ?? "";
+      String state = location["state"] ?? "";
+      String country = location["country"] ?? "";
+
+      // Apply filtering
+      List<Event> filtered = eventList;
+
+      // If location-based filters are selected, filter by them
+      bool hasLocationFilters = selectedFilters.any(
+        (filter) => ["City", "State", "Country", "World"].contains(filter),
+      );
+
+      if (hasLocationFilters) {
+        filtered = filtered.where((news) {
+          bool matches = false;
+          log("News city is ${news.city} and my city is $city");
+          if (selectedFilters.contains("City") && news.city == city) {
+            matches = true;
+          }
+          if (selectedFilters.contains("State") && news.state == state) {
+            matches = true;
+          }
+          if (selectedFilters.contains("Country") && news.country == country) {
+            matches = true;
+          }
+          if (selectedFilters.contains("World")) {
+            matches = true;
+          }
+
+          return matches;
+        }).toList();
+      }
+
+      // If no location-based filters were applied, keep all news
+      if (!hasLocationFilters) {
+        filtered = List.from(eventList);
+      }
+
+      // Now, apply sorting based on "Recent" and "Popular"
+      if (selectedFilters.contains("Recent")) {
+        log("Sorting by Recent");
+        filtered
+            .sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Latest first
+      }
+      if (selectedFilters.contains("Popular")) {
+        log("Sorting by Popular");
+        filtered
+            .sort((a, b) => b.score.compareTo(a.score)); // Highest score first
+      }
+      filteredEvents.value = filtered;
+    } else {
+      filteredEvents.value = eventList;
+    }
+  }
+
   Future<void> fetchAllEvents() async {
     loading.value = true;
     try {
       var response = await ApiClient().get(ApiEndPoints.allEvent);
-      log("$response");
+      log("The event response is -==>$response");
       if (response["events"] != null) {
         eventList.value = List<Event>.from(
             response["events"].map((events) => Event.fromJson(events)));
+        filterEvent();
         applyEventFilter();
       }
     } catch (e) {

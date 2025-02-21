@@ -52,6 +52,7 @@ class PostController extends GetxController {
 
   void showImageSourceDialog() {
     Get.defaultDialog(
+      barrierDismissible: false,
       title: 'Pick an image',
       content: Column(
         mainAxisSize: MainAxisSize.min,

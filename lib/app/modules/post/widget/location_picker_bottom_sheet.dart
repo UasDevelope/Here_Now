@@ -13,10 +13,12 @@ class LocationPickerBottomSheet extends StatelessWidget {
   final LocationController locationController =
       ControllerLocator.locationController;
 
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.9,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
@@ -25,10 +27,34 @@ class LocationPickerBottomSheet extends StatelessWidget {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Text(
-              'Pick a Location',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Column(
+              children: [
+                Text(
+                  'Pick a Location',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                // Search Bar
+                TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search location...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      locationController.searchLocation(value);
+                      _searchController.clear();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           // Google Map
@@ -39,9 +65,10 @@ class LocationPickerBottomSheet extends StatelessWidget {
                         locationController.longitude.value),
                     zoom: 14.0,
                   ),
-                  onMapCreated: (GoogleMapController mapController) {},
+                  onMapCreated: (GoogleMapController controller) {
+                    locationController.mapController = controller;
+                  },
                   onTap: (LatLng tappedLatLng) {
-                    log("testing $tappedLatLng");
                     locationController.onMapTapped(tappedLatLng);
                   },
                   markers: {
@@ -49,20 +76,43 @@ class LocationPickerBottomSheet extends StatelessWidget {
                       markerId: MarkerId('selectedLocation'),
                       position: LatLng(locationController.latitude.value,
                           locationController.longitude.value),
+                      infoWindow: InfoWindow(
+                        title: locationController
+                                .selectedLocation['locationName'] is String
+                            ? locationController
+                                .selectedLocation['locationName']
+                            : locationController
+                                        .selectedLocation['locationName']
+                                    ?['locationName'] ??
+                                'Selected Location',
+                      ),
+                      draggable: true,
+                      onDragEnd: (LatLng newPosition) {
+                        locationController.onMapTapped(newPosition);
+                      },
                     ),
                   },
                 ),
               )),
           // Location Info
-
           LocationDetailsWidget(locationController: locationController),
 
-          // ElevatedButton(
-          //   onPressed: () {
-          //     Get.back();
-          //   },
-          //   child: Text('Confirm Location'),
-          // ),
+          // Confirm Button
+          Center(
+            child: AppButton(
+              height: 50,
+              textWeight: FontWeight.w800,
+              textSize: 20,
+              width: Get.width / 1.2,
+              text: "Confirm Location",
+              textColor: AppColors.white,
+              borderRadius: 10,
+              onTap: () {
+                Get.back();
+                // Get.toNamed(Routes.bottomNav);
+              },
+            ),
+          ),
         ],
       ),
     );

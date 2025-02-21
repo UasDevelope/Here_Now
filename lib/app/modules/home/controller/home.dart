@@ -28,6 +28,7 @@ class HomeController extends GetxController {
   }
 
   RxList<LatLng> newLocation = <LatLng>[].obs;
+
   var newsList = <NewsWithScore>[].obs;
 
   var filteredNews = <NewsWithScore>[].obs;
@@ -37,7 +38,6 @@ class HomeController extends GetxController {
     List<String> selectedFilters = selectedNewsType;
     Map<String, dynamic> location = locationController.userLocation;
     final controller = ControllerLocator.eventsController;
-
     // Extract location details
     String city = location["city"] ?? "";
     String state = location["state"] ?? "";
@@ -117,15 +117,31 @@ class HomeController extends GetxController {
     rated.value = rating;
   }
 
-  RxList<String> selectedNewsType = <String>["World", "Popular"].obs;
+  RxList<String> selectedNewsType = <String>["World", "Popular", "News"].obs;
 
   void changeSelectedNewsType(String newValue) {
+    final eventController = ControllerLocator.eventsController;
     if (selectedNewsType.contains(newValue)) {
-      selectedNewsType.remove(newValue); // Deselect if already selected
+      // Remove the selected item if it already exists
+      selectedNewsType.remove(newValue);
+    } else if (newValue == "News") {
+      // If "News" is selected, remove "Events" if present
+      if (selectedNewsType.contains("Events")) {
+        selectedNewsType.remove("Events");
+      }
+      selectedNewsType.add(newValue);
+    } else if (newValue == "Events") {
+      if (selectedNewsType.contains("News")) {
+        selectedNewsType.remove("News");
+      }
+      selectedNewsType.add(newValue);
     } else {
-      selectedNewsType.add(newValue); // Add to selection if not selected
+      // Add the new value if no conditions are met
+      selectedNewsType.add(newValue);
     }
+
     filterNews();
+    eventController.filterEvent();
   }
 
   var filteredNewsList = <NewsWithScore>[].obs;

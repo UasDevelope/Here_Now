@@ -4,11 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:here_now/app/utils/share_util.dart';
 import 'package:here_now/app/utils/widgets.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
-import 'package:image/image.dart' as img;
 
 class Posts extends StatelessWidget {
   final String userName;

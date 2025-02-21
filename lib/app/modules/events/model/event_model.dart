@@ -20,6 +20,9 @@ class Event {
   final DateTime updatedAt;
   final String averageRating; // New field
   final bool userRated; // New field
+  final String city; // New field
+  final String state; // New field
+  final String country; // New field
 
   Event({
     required this.id,
@@ -41,31 +44,36 @@ class Event {
     required this.updatedAt,
     required this.averageRating,
     required this.userRated,
+    required this.city,
+    required this.state,
+    required this.country,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
-        id: json['_id'] ?? '',
-        description: json['description'] ?? '',
-        image: json['image'] ?? '',
-        video: json['video'] ?? '',
-        latitude: json['lat']?.toDouble() ?? 0.0,
-        longitude: json['long']?.toDouble() ?? 0.0,
-        location: json['location'] ?? '',
-        contact: json['contact'] ?? '',
-        price: json['price'] ?? 0,
-        // Handle null user
-        user: json['user'] != null ? User.fromJson(json['user']) : null,
-        startDate: DateTime.parse(json['startDate']),
-        endDate: DateTime.parse(json['endDate']),
-        rating: json['rating'] ?? [],
-        comments:
-            List<String>.from(json['comment']?.map((c) => c['_id']) ?? []),
-        score: json['score'] ?? 0,
-        createdAt: DateTime.parse(json['createdAt']),
-        updatedAt: DateTime.parse(json['updatedAt']),
-        averageRating: json["averageRating"],
-        userRated: json["userRated"]);
+      id: json['_id'] ?? '',
+      description: json['description'] ?? '',
+      image: json['image'] ?? '',
+      video: json['video'] ?? '',
+      latitude: json['lat']?.toDouble() ?? 0.0,
+      longitude: json['long']?.toDouble() ?? 0.0,
+      location: json['location'] ?? '',
+      contact: json['contact'] ?? '',
+      price: json['price'] ?? 0,
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      rating: json['rating'] ?? [],
+      comments: List<String>.from(json['comment']?.map((c) => c['_id']) ?? []),
+      score: json['score'] ?? 0,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      averageRating: json["averageRating"] ?? '',
+      userRated: json["userRated"] ?? false,
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      country: json['country'] ?? '',
+    );
   }
 
   String getFormattedStartDate() {

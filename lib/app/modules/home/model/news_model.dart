@@ -84,14 +84,24 @@ class NewsWithScore {
       city: json['city'] ?? 'Mountain View', // Default: Mountain View
       state: json['state'] ?? 'California', // Default: California
       country: json['country'] ?? 'United States', // Default: United States
-      user: User.fromJson(json['user']),
+      user: json['user'] != null ? User.fromJson(json['user']) : _defaultUser(),
       views: json['views'] ?? 0,
       newsComments: json['newsComments'] ?? [],
       rating: json['rating'] ?? [],
       score: json['score'] ?? 0,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
       commentsCount: json['commentsCount'] ?? 0,
+    );
+  }
+
+// Helper method to return a default user if the field is null
+  static User _defaultUser() {
+    return User(
+      id: '',
+      firstName: 'Unknown',
+      lastName: 'User',
+      image: null,
     );
   }
 }

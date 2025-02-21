@@ -10,7 +10,8 @@ class TextGridView extends StatelessWidget {
     "World",
     "Popular",
     "Recent",
-    // "Events",
+    "Events",
+    "News",
     // "Institutions",
   ];
 

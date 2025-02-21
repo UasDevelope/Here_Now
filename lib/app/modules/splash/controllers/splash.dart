@@ -20,6 +20,7 @@ class SplashController extends GetxController {
 
         Get.offAllNamed(Routes.login);
       } else {
+        // Get.offAllNamed(Routes.login);
         Get.offAllNamed(Routes.bottomNav);
       }
       // print("===================>Navigating to login screen");

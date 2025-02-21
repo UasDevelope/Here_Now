@@ -41,7 +41,8 @@ class LocationService {
         String state = placemark.administrativeArea ?? "Unknown State";
         String country = placemark.country ?? "Unknown Country";
 
-        String locationName = placemark.name ?? "";
+        String locationName =
+            "${placemark.subLocality ?? ""},${placemark.street ?? ""}";
 
         // Log the location details
         lg.log(
@@ -78,14 +79,27 @@ class LocationService {
     );
     if (placemarks.isNotEmpty) {
       Placemark place = placemarks.first;
+      lg.log(
+          "Place is ${place.administrativeArea},${place.subLocality},${place.street}");
       return {
         'city': place.locality ?? '',
         'state': place.administrativeArea ?? '',
         'country': place.country ?? '',
-        'locationName': place.name ?? "",
+        'locationName': "${place.subLocality ?? ""},${place.street ?? ""}",
       };
     } else {
       return {};
+    }
+  }
+
+  static Future<List<Location>> searchLocation(String query) async {
+    try {
+      List<Location> locations = await locationFromAddress(query);
+      return locations;
+    } catch (e) {
+      lg.log("Error searching location: $e");
+      ShortMessageUtils.showError("Failed to find location");
+      return [];
     }
   }
 }
