@@ -19,7 +19,6 @@ class Posts extends StatelessWidget {
   final String starIcon;
   final String commentIcon;
   final String thumbIcon;
-
   Posts({
     Key? key,
     this.userName = "John Doe",
@@ -102,14 +101,14 @@ class Posts extends StatelessWidget {
                 fontWeight: FontWeight.w900,
               ),
             ),
-            SizedBox(height: Get.height * 0.02),
+            const SizedBox(height: 3),
             GestureDetector(
               onTap: () {
                 log("Post Image is $postImage");
                 Get.toNamed(Routes.fullScreenImageView, arguments: postImage);
               },
               child: Container(
-                height: Get.height / 1.7,
+                height: MediaQuery.of(context).size.height /1.4,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
                   image: DecorationImage(
@@ -142,7 +141,6 @@ class Posts extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: Get.height * 0.02),
             Row(
               children: [
                 Text(

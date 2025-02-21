@@ -7,6 +7,7 @@ import 'package:here_now/app/pages/pages.dart';
 import 'package:here_now/app/utils/pref_util.dart';
 import 'package:here_now/app/utils/widgets.dart';
 
+import '../controller/profile_controller.dart';
 import '../widget/profilerow.dart';
 
 class ProfiileScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class ProfiileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = ControllerLocator.profileController;
+    final controller = Get.put(ProfileController());
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Column(

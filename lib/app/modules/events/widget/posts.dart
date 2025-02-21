@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/events/model/comment_model.dart';
 import 'package:here_now/app/modules/events/model/event_model.dart';
+import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/share_util.dart';
 import '../../../utils/widgets.dart';
 import '../view/events_detail.dart';
+import 'button.dart';
+import 'map.dart';
 
 class EventPosts extends StatelessWidget {
   bool showMap;
@@ -12,9 +16,6 @@ class EventPosts extends StatelessWidget {
   EventPosts({super.key, this.showMap = false, required this.data});
   @override
   Widget build(BuildContext context) {
-    final controller = ControllerLocator.eventsController;
-    final userController = ControllerLocator.profileController;
-
     return InkWell(
       onTap: () {
         Get.to(EventDetailPost(
@@ -23,17 +24,19 @@ class EventPosts extends StatelessWidget {
         ));
       },
       child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(8), // Add some padding for better UI
         child: SingleChildScrollView(
           child: Column(
             spacing: 4,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align vertically
                 children: [
+                  // Display user image if available, otherwise show a default image
                   CircleAvatar(
-                    radius: 20,
+                    radius: 20, // Size of the circular image
                     backgroundImage: data.user?.image != null
                         ? NetworkImage("${data.user?.image}")
                         : AssetImage(Images.person),
@@ -42,6 +45,8 @@ class EventPosts extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(top: 10),
                     child: Text(
+                      // Safely display user name, if available
+
                       "${data.user?.firstName ?? ''} ${data.user?.lastName ?? ''}",
                       style: AppStyle.openSans(
                         color: Colors.black,
@@ -53,6 +58,7 @@ class EventPosts extends StatelessWidget {
                 ],
               ),
               Text(
+                // Format the createdAt date and include the location
                 "${data.location}, ${DateFormat('dd/MM/yy HH:mm').format(data.createdAt)}",
                 style: AppStyle.openSans(
                   color: Colors.black,
@@ -108,102 +114,6 @@ class EventPosts extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        double.parse(data.averageRating).toStringAsFixed(1),
-                        style: AppStyle.openSans(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Image.asset(
-                        Images.star,
-                        height: 30,
-                        color: data.userRated ? AppColors.appColor : null,
-                      ),
-                      Spacer(),
-                      // Image.asset(
-                      //   Images.share,
-                      //   height: 20,
-                      // ),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          controller.fetchComments(data.id).then((_) {
-                            commentsBottomSheet(
-                              commentController: controller.commentController,
-                              onSendComment: () {
-                                final newCommentText =
-                                    controller.commentController.text.trim();
-                                if (newCommentText.isNotEmpty) {
-                                  // Add a new comment to the local comments list
-                                  controller.commentsList.add(
-                                    Comment(
-                                      user: commentUser(
-                                        email: userController.user.value!.email,
-                                        image: userController.user.value!.image,
-                                        firstName: userController
-                                            .user.value!.firstName,
-                                        lastName:
-                                            userController.user.value!.lastName,
-                                      ),
-                                      content: newCommentText,
-                                      createdAt: DateTime.now()
-                                          .toString(), // Current timestamp
-                                    ),
-                                  );
-
-                                  // Clear the text field
-
-                                  // Optionally send the comment to the server
-                                  controller
-                                      .addComment(
-                                    data.id,
-                                  )
-                                      .then((success) {
-                                    controller.commentController.clear();
-
-                                    if (!success) {
-                                      print(
-                                          "Failed to post comment to the server.");
-                                    }
-                                  });
-                                }
-                              },
-                            );
-                          });
-                        },
-                        child: Image.asset(
-                          Images.comment,
-                          height: 30,
-                          width: 30,
-                        ),
-                      ),
-
-                      Text("${data.comments.length}",
-                          style: AppStyle.openSans(
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w800)),
-                      SizedBox(
-                        width: Get.height * 0.01,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.share, color: Colors.black),
-                        onPressed: () {
-                          ShareUtil.sharePost(
-                              postImageUrl: data.image,
-                              userName:
-                                  "${data.user!.firstName} ${data.user!.lastName}",
-                              postDescription: data.description);
-                        },
-                      ),
-                    ],
                   ),
                 ],
               ),
