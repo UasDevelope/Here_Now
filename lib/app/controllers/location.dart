@@ -20,6 +20,7 @@ class LocationController extends GetxController {
     log("Fetched location is $locationName");
     longitude.value = locationName["lng"];
     latitude.value = locationName["lat"];
+    log("Latitude is $latitude and longitude is $longitude");
     userLocation.value = location;
     selectedLocation.value = location;
     locationController.text = location["locationName"];
@@ -47,7 +48,9 @@ class LocationController extends GetxController {
           location.latitude,
           location.longitude,
         );
+
         locationController.text = selectedLocation["locationName"];
+        log("Selected location is $selectedLocation");
         updateMapCamera();
       }
     } catch (e) {
@@ -56,16 +59,14 @@ class LocationController extends GetxController {
   }
 
   void updateMapCamera() {
-    if (mapController != null) {
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(latitude.value, longitude.value),
-            zoom: 14.0,
-          ),
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(latitude.value, longitude.value),
+          zoom: 14.0,
         ),
-      );
-    }
+      ),
+    );
   }
 
   @override

@@ -95,6 +95,7 @@ class LocationService {
   static Future<List<Location>> searchLocation(String query) async {
     try {
       List<Location> locations = await locationFromAddress(query);
+      lg.log("Locations are $locations");
       return locations;
     } catch (e) {
       lg.log("Error searching location: $e");
