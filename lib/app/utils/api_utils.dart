@@ -45,7 +45,7 @@ class ApiEndPoints {
 }
 
 class ApiClient {
-  static const String _defaultBaseUrl = "https://here-now-2.vercel.app";
+  static const String _defaultBaseUrl = "http://34.207.122.207:5000";
   final String baseUrl;
 
   ApiClient({this.baseUrl = _defaultBaseUrl});

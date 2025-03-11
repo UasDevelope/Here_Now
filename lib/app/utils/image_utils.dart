@@ -19,9 +19,9 @@ class ImageUtils {
     final compressedImage = await FlutterImageCompress.compressAndGetFile(
       originalImage.path,
       compressedPath,
-      minWidth: 320,
-      minHeight: 240,
-      quality: 50,
+      minWidth: 400,
+      minHeight: 400,
+      quality: 100,
     );
 
     if (compressedImage != null) {
@@ -38,7 +38,8 @@ class ImageUtils {
     }
   }
 
-  static Future<void> pickAndUpdateImage(RxString pathToUpdate,{ImageSource source=ImageSource.camera}) async {
+  static Future<void> pickAndUpdateImage(RxString pathToUpdate,
+      {ImageSource source = ImageSource.camera}) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: source);
 
