@@ -39,9 +39,9 @@ class AuthController extends GetxController {
         ShortMessageUtils.showError("Please fill all fields");
       }
     } catch (e) {
+      CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showError("$e");
     } finally {
-      CustomLoadingDialog.closeLoadingDialog();
     }
   }
 

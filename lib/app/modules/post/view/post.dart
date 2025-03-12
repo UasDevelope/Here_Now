@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -284,6 +285,7 @@ class Postscreen extends StatelessWidget {
                                   textColor: AppColors.white,
                                   borderRadius: 10,
                                   onTap: () {
+                                    log("selected category is ${controller.selectedCategory}");
                                     if (controller.selectedCategory.value ==
                                         "Events") {
                                       controller.createEventPost();

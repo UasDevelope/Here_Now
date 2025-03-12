@@ -10,33 +10,33 @@ import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 class ImageUtils {
-  static Future<XFile?> compressImage(XFile originalImage) async {
-    final directory = path.dirname(originalImage.path);
-    final fileName = 'compressed_${path.basename(originalImage.path)}';
-    log("File name is ==> $fileName");
-    final compressedPath = path.join(directory, fileName);
-
-    final compressedImage = await FlutterImageCompress.compressAndGetFile(
-      originalImage.path,
-      compressedPath,
-      minWidth: 400,
-      minHeight: 400,
-      quality: 100,
-    );
-
-    if (compressedImage != null) {
-      final originalSize = await File(originalImage.path).length();
-      final compressedSize = await File(compressedImage.path).length();
-      log("Original file path is ${originalImage.path} compressed file path is ${compressedImage.path}");
-      print('Original Image Size: ${originalSize ~/ 1024} KB');
-      print('Compressed Image Size: ${compressedSize ~/ 1024} KB');
-
-      return XFile(compressedImage.path);
-    } else {
-      // Compression failed, handle the error
-      return null;
-    }
-  }
+  // static Future<XFile?> compressImage(XFile originalImage) async {
+  //   final directory = path.dirname(originalImage.path);
+  //   final fileName = 'compressed_${path.basename(originalImage.path)}';
+  //   log("File name is ==> $fileName");
+  //   final compressedPath = path.join(directory, fileName);
+  //
+  //   final compressedImage = await FlutterImageCompress.compressAndGetFile(
+  //     originalImage.path,
+  //     compressedPath,
+  //     minWidth: 400,
+  //     minHeight: 400,
+  //     quality: 100,
+  //   );
+  //
+  //   if (compressedImage != null) {
+  //     final originalSize = await File(originalImage.path).length();
+  //     final compressedSize = await File(compressedImage.path).length();
+  //     log("Original file path is ${originalImage.path} compressed file path is ${compressedImage.path}");
+  //     print('Original Image Size: ${originalSize ~/ 1024} KB');
+  //     print('Compressed Image Size: ${compressedSize ~/ 1024} KB');
+  //
+  //     return XFile(compressedImage.path);
+  //   } else {
+  //     // Compression failed, handle the error
+  //     return null;
+  //   }
+  // }
 
   static Future<void> pickAndUpdateImage(RxString pathToUpdate,
       {ImageSource source = ImageSource.camera}) async {
@@ -44,8 +44,8 @@ class ImageUtils {
     final XFile? image = await picker.pickImage(source: source);
 
     if (image != null) {
-      final XFile? compressImage = await ImageUtils.compressImage(image);
-      pathToUpdate.value = compressImage!.path;
+      // final XFile? compressImage = await ImageUtils.compressImage(image);
+      pathToUpdate.value = image.path;
     } else {
       ShortMessageUtils.showError("Please pick an image");
     }
