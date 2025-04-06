@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,11 +8,14 @@ import 'package:here_now/app/utils/appstyle.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+
 import '../../../controllers/controller_locator.dart';
-import '../../../routes/routes.dart';
 import '../../../utils/api_utils.dart';
+import '../../../utils/appbutton.dart';
+import '../../../utils/colors.dart';
 import '../../../utils/image_utils.dart';
-import '../../../utils/location_utils.dart';
+import '../../../utils/string.dart';
+import '../../../utils/textfiled.dart';
 
 class PostController extends GetxController {
   // Map to associate categories with their respective news types
@@ -49,6 +53,80 @@ class PostController extends GetxController {
   }.obs;
 
   RxString imageUrl = "".obs;
+  void showPostBottomSheet(BuildContext context) {
+    if (imagePath.isEmpty) {
+      ShortMessageUtils.showError("Please select an image first");
+      updateSelectedCategory(selectedCategory.value);
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image display
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(File(imagePath.value)),
+                  fit: BoxFit.cover,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            SizedBox(height: 16),
+            // Description field
+            Text(
+              AppString.description,
+              style: AppStyle.openSans(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            SizedBox(height: 8),
+            AppTextField(
+              obscureText: false,
+              maxline: 6,
+              width: double.infinity,
+              height: 150,
+              hintText: AppString.typesomething,
+              controller: descriptionController,
+            ),
+            Spacer(),
+            // Submit button
+            Center(
+              child: AppButton(
+                height: 50,
+                textWeight: FontWeight.w800,
+                textSize: 20,
+                width: Get.width * 0.8,
+                text: "Submit",
+                textColor: AppColors.white,
+                borderRadius: 10,
+                onTap: () {
+                  if (descriptionController.text.isEmpty) {
+                    ShortMessageUtils.showError("Please enter a description");
+                    return;
+                  }
+                  Get.back(); // Close bottom sheet
+                  // Update the UI with the submitted data
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
 
   void showImageSourceDialog() {
     Get.defaultDialog(
@@ -63,10 +141,16 @@ class PostController extends GetxController {
               'Use Camera',
               style: AppStyle.openSans(),
             ),
-            onTap: () {
-              ImageUtils.pickAndUpdateImage(imagePath,
+            onTap: () async {
+              await ImageUtils.pickAndUpdateImage(imagePath,
                   source: ImageSource.camera);
+
               Get.back();
+              if (imagePath.isNotEmpty) {
+                showPostBottomSheet(Get.context!);
+              } else {
+                updateSelectedCategory("Events");
+              }
             },
           ),
           ListTile(
@@ -79,6 +163,11 @@ class PostController extends GetxController {
               ImageUtils.pickAndUpdateImage(imagePath,
                   source: ImageSource.gallery);
               Get.back();
+              if (imagePath.isNotEmpty) {
+                showPostBottomSheet(Get.context!);
+              } else {
+                updateSelectedCategory("Events");
+              }
             },
           ),
         ],
@@ -93,11 +182,19 @@ class PostController extends GetxController {
       categoryToNewsType[selectedCategory.value] ??
       []; // Get news types for the selected category
 
-  void updateSelectedCategory(String value) {
+  Future<void> updateSelectedCategory(String value) async {
+    log("Value is $value");
     if (value == "Events") {
       showImageSourceDialog();
     } else if (value == "News") {
-      ImageUtils.pickAndUpdateImage(imagePath, source: ImageSource.camera);
+      await ImageUtils.pickAndUpdateImage(imagePath,
+          source: ImageSource.camera);
+      if (imagePath.value.isNotEmpty) {
+        showPostBottomSheet(Get.context!);
+      } else {
+        updateSelectedCategory(value);
+      }
+      log("Show bottom sheet ${value} ${imagePath.value}");
     }
     selectedCategory.value = value;
   }
