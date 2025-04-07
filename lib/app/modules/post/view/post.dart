@@ -1,9 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:here_now/app/modules/profile/widget/profile_shimmer_effect.dart';
+
 import '../../../utils/widgets.dart';
 import '../widget/location_picker_bottom_sheet.dart';
 
@@ -94,7 +95,6 @@ class Postscreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-
                               InkWell(
                                 onTap: () {
                                   controller.showImageSourceDialog();
@@ -118,9 +118,6 @@ class Postscreen extends StatelessWidget {
                                       Images.addimage,
                                       height: 40,
                                     )),
-
-
-
                               Text(
                                 AppString.title,
                                 style: AppStyle.openSans(
@@ -262,11 +259,14 @@ class Postscreen extends StatelessWidget {
                               AppTextField(
                                   readOnly: true,
                                   onTap: () {
-                                    Get.bottomSheet(
-                                      LocationPickerBottomSheet(),
-                                      isScrollControlled:
-                                          true, // To make sure the bottom sheet is not full height
-                                    );
+                                    if (controller.selectedCategory.value ==
+                                        "Events") {
+                                      Get.bottomSheet(
+                                        LocationPickerBottomSheet(),
+                                        isScrollControlled:
+                                            true, // To make sure the bottom sheet is not full height
+                                      );
+                                    }
                                   },
                                   obscureText: false,
                                   maxline: 4,
