@@ -14,11 +14,15 @@ class BottomNavController extends GetxController {
 
   ///Change a Current INDEX
   void changeIndex(int index) {
+    log("Index is $index and current index is ${currentIndex.value}");
     // String category = postController.selectedCategory.value;
     // log("Category is $category");
     if (currentIndex.value == 1 && index == 2) {
+      log("U reach here");
       postController.updateSelectedCategory("Events");
     } else if (currentIndex.value == 0 && index == 2) {
+      log("U reach here==>News");
+
       postController.updateSelectedCategory("News");
     }
     if (index == 1) {
