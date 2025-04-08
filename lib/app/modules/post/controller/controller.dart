@@ -70,15 +70,21 @@ class PostController extends GetxController {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image display
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(File(imagePath.value)),
-                  fit: BoxFit.cover,
+            InkWell(
+              onTap: () async {
+                await ImageUtils.pickAndUpdateImage(imagePath,
+                    source: ImageSource.camera);
+              },
+              child: Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File(imagePath.value)),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                borderRadius: BorderRadius.circular(8),
               ),
             ),
             SizedBox(height: 16),
@@ -111,12 +117,16 @@ class PostController extends GetxController {
                 text: "Submit",
                 textColor: AppColors.white,
                 borderRadius: 10,
-                onTap: () {
+                onTap: () async {
                   if (descriptionController.text.isEmpty) {
                     ShortMessageUtils.showError("Please enter a description");
                     return;
                   }
-                  Get.back(); // Close bottom sheet
+                  if (selectedCategory.value == "News") {
+                    // Get.back();
+                    await createNewsPost();
+                    Get.back();
+                  } else {}
                   // Update the UI with the submitted data
                 },
               ),
