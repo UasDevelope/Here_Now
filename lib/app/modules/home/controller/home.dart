@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:here_now/app/controllers/controller_locator.dart';
 import 'package:here_now/app/modules/home/model/news_model.dart';
 import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
@@ -152,7 +152,6 @@ class HomeController extends GetxController {
     if (searchValue.isEmpty) {
       filteredNewsList.value = newsList;
     } else {
-      // Filter the list based on search input
       filteredNewsList.value = newsList
           .where((news) =>
               news.title.toLowerCase().contains(searchValue.toLowerCase()) ||
