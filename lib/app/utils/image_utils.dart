@@ -1,73 +1,77 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:developer';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:here_now/app/utils/api_utils.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-class ImageUtils {
-  // static Future<XFile?> compressImage(XFile originalImage) async {
-  //   final directory = path.dirname(originalImage.path);
-  //   final fileName = 'compressed_${path.basename(originalImage.path)}';
-  //   log("File name is ==> $fileName");
-  //   final compressedPath = path.join(directory, fileName);
-  //
-  //   final compressedImage = await FlutterImageCompress.compressAndGetFile(
-  //     originalImage.path,
-  //     compressedPath,
-  //     minWidth: 400,
-  //     minHeight: 400,
-  //     quality: 100,
-  //   );
-  //
-  //   if (compressedImage != null) {
-  //     final originalSize = await File(originalImage.path).length();
-  //     final compressedSize = await File(compressedImage.path).length();
-  //     log("Original file path is ${originalImage.path} compressed file path is ${compressedImage.path}");
-  //     print('Original Image Size: ${originalSize ~/ 1024} KB');
-  //     print('Compressed Image Size: ${compressedSize ~/ 1024} KB');
-  //
-  //     return XFile(compressedImage.path);
-  //   } else {
-  //     // Compression failed, handle the error
-  //     return null;
-  //   }
-  // }
 
+class ImageUtils {
+  // Pick an image
   static Future<void> pickAndUpdateImage(RxString pathToUpdate,
       {ImageSource source = ImageSource.camera}) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: source);
 
     if (image != null) {
-      // final XFile? compressImage = await ImageUtils.compressImage(image);
       pathToUpdate.value = image.path;
     } else {
       ShortMessageUtils.showError("Please pick an image");
     }
   }
 
-  static Future<String> uploadToCloudinary(
-      String imagePath, String folderName) async {
+  // Pick or capture a video
+  static Future<void> pickAndUpdateVideo(
+      RxString videoPathToUpdate, RxString imagePathToUpdate,
+      {ImageSource source = ImageSource.camera}) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? video = await picker.pickVideo(
+        source: source, maxDuration: Duration(seconds: 10));
+    if (video != null) {
+      videoPathToUpdate.value = video.path;
+      // Generate thumbnail from video using VideoThumbnail.thumbnailFile
+      final thumbnailXFile = await VideoThumbnail.thumbnailFile(
+        video: video.path,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 1280,
+        quality: 75,
+      );
+      if (thumbnailXFile.path != "" &&
+          await File(thumbnailXFile.path).exists()) {
+        imagePathToUpdate.value = thumbnailXFile.path;
+      } else {
+        ShortMessageUtils.showError("Failed to generate video thumbnail");
+        imagePathToUpdate.value = "";
+      }
+    } else {
+      ShortMessageUtils.showError("Please pick a video");
+      videoPathToUpdate.value = "";
+    }
+  }
+
+  // Upload to Cloudinary (for both image and video)
+  static Future<String> uploadToCloudinary(String filePath, String folderName,
+      {bool isVideo = false}) async {
     try {
       const cloudName = 'dh61apvbf';
       const uploadPreset = 'wbznzo2g';
 
-      final uri =
-          Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/upload');
+      final uri = Uri.parse(
+          'https://api.cloudinary.com/v1_1/$cloudName/${isVideo ? 'video' : 'image'}/upload');
       final request = http.MultipartRequest('POST', uri)
         ..fields['upload_preset'] = uploadPreset
         ..fields['folder'] = folderName
         ..files.add(
           http.MultipartFile(
             'file',
-            File(imagePath).openRead(),
-            await File(imagePath).length(),
-            filename: 'image.jpg',
+            File(filePath).openRead(),
+            await File(filePath).length(),
+            filename: isVideo ? 'video.mp4' : 'image.jpg',
           ),
         );
 
@@ -79,12 +83,38 @@ class ImageUtils {
 
         return decodedData['secure_url'];
       } else {
-        print('Failed to upload image: ${response.statusCode}');
-        throw Exception('Failed to upload image');
+        print(
+            'Failed to upload ${isVideo ? 'video' : 'image'}: ${response.statusCode}');
+        throw Exception('Failed to upload ${isVideo ? 'video' : 'image'}');
       }
     } catch (error) {
-      print('Error uploading image: $error');
+      print('Error uploading ${isVideo ? 'video' : 'image'}: $error');
       rethrow;
+    }
+  }
+
+  // Upload thumbnail and video, combine URLs
+  static Future<String> uploadMediaWithThumbnail(
+      String thumbnailPath, String? videoPath, String folderName) async {
+    try {
+      // Upload thumbnail
+      final thumbnailUrl =
+          await uploadToCloudinary(thumbnailPath, folderName, isVideo: false);
+
+      // If no video, return only thumbnail URL
+      if (videoPath == null || videoPath.isEmpty) {
+        return thumbnailUrl;
+      }
+
+      // Upload video
+      final videoUrl =
+          await uploadToCloudinary(videoPath, folderName, isVideo: true);
+
+      // Combine URLs
+      return '$videoUrl&thumbnail=$thumbnailUrl';
+    } catch (e) {
+      ShortMessageUtils.showError("Error uploading media: $e");
+      return "";
     }
   }
 
@@ -102,7 +132,7 @@ class ImageUtils {
       final response = await ApiClient(baseUrl: ApiEndPoints.cloudinaryBaseUrl)
           .postFormData(ApiEndPoints.uploadImage(cloudName), data);
       log("Response is $response and image url is ${response["secure_url"]}");
-      return response["secureUrl"];
+      return response["secure_url"];
     } catch (e) {
       ShortMessageUtils.showError("$e");
       return "";

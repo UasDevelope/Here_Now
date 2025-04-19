@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:get/get.dart';
+
 import 'package:here_now/app/modules/events/model/event_model.dart';
 import 'package:here_now/app/utils/api_utils.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
@@ -161,8 +161,12 @@ class EventsController extends GetxController {
       }
       if (selectedFilters.contains("Popular")) {
         log("Sorting by Popular");
-        filtered
-            .sort((a, b) => b.score.compareTo(a.score)); // Highest score first
+        filtered.sort((a, b) {
+          num scoreA = num.tryParse(a.score.toString()) ?? 0;
+          num scoreB = num.tryParse(b.score.toString()) ?? 0;
+          return scoreB.compareTo(scoreA);
+        });
+// Highest score first
       }
       filteredEvents.value = filtered;
     } else {
@@ -182,7 +186,7 @@ class EventsController extends GetxController {
         applyEventFilter();
       }
     } catch (e) {
-      log("Error$e");
+      log("Error during fetching event $e");
     } finally {
       loading.value = false;
     }

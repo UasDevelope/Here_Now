@@ -15,7 +15,7 @@ class Event {
   final DateTime endDate;
   final List<dynamic> rating;
   final List<String> comments;
-  final int score;
+  final String score;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String averageRating; // New field
@@ -50,6 +50,10 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
+    json.forEach((key, value) {
+      print('Event $key: ${value.runtimeType}');
+    });
+
     return Event(
       id: json['_id'] ?? '',
       description: json['description'] ?? '',
@@ -65,7 +69,7 @@ class Event {
       endDate: DateTime.parse(json['endDate']),
       rating: json['rating'] ?? [],
       comments: List<String>.from(json['comment']?.map((c) => c['_id']) ?? []),
-      score: json['score'] ?? 0,
+      score: json['score'] ?? "0",
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       averageRating: json["averageRating"] ?? '',

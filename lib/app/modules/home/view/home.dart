@@ -1,9 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:here_now/app/controllers/location.dart';
 import 'package:here_now/app/modules/events/widget/event_shimmer.dart';
-import 'package:here_now/app/modules/events/widget/map.dart';
 import 'package:here_now/app/modules/home/widget/posts.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 
@@ -150,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                                   "${data.user.firstName} ${data.user.lastName}",
                               userAvatar: "${data.user.image}",
                               locationAndTime:
-                                  "${data.location}, ${DateTimeUtils.formatToDmy(data.createdAt)}",
+                                  "${data.location}, ${DateTimeUtils.formatToIsoWithTime(data.createdAt)}",
                               postDescription: data.description,
                               postImage: "${data.image}",
                               likes: data.averageRating.toStringAsFixed(1),

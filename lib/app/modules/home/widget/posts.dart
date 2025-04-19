@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:here_now/app/modules/video/view/video_player_view.dart';
 import 'package:here_now/app/utils/share_util.dart';
 import 'package:here_now/app/utils/widgets.dart';
 
@@ -39,7 +39,12 @@ class Posts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("Post image is ${postImage == "" || postImage == "null"} $postImage");
+    // Check if postImage contains a video (has &thumbnail=)
+    final isVideo = postImage.contains('&thumbnail=');
+    // Extract thumbnail URL if video, else use postImage
+    final displayImage =
+        isVideo ? postImage.split('&thumbnail=')[1] : postImage;
+    final videoUrl = isVideo ? postImage.split('&thumbnail=')[0] : '';
     return Container(
       padding: const EdgeInsets.all(8),
       child: SingleChildScrollView(
@@ -67,11 +72,6 @@ class Posts extends StatelessWidget {
                     ),
                   ),
                 ),
-                // const Spacer(),
-                // IconButton(
-                //   icon: Icon(Icons.share, color: AppColors.appColor),
-                //   onPressed: _sharePost,
-                // ),
               ],
             ),
             Text(
@@ -104,26 +104,44 @@ class Posts extends StatelessWidget {
             const SizedBox(height: 3),
             GestureDetector(
               onTap: () {
-                log("Post Image is $postImage");
-                Get.toNamed(Routes.fullScreenImageView, arguments: postImage);
+                if (isVideo) {
+                  log("user clicked video $videoUrl");
+                  Get.to(VideoPlayerScreen(url: videoUrl));
+                } else {
+                  log("Post Image is $postImage");
+                  Get.toNamed(Routes.fullScreenImageView,
+                      arguments: displayImage);
+                }
               },
               child: Container(
-                height: MediaQuery.of(context).size.height /1.4,
+                height: MediaQuery.of(context).size.height / 1.4,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7),
-                  image: DecorationImage(
-                    image: postImage.isNotEmpty && postImage != "null"
-                        ? NetworkImage(postImage)
-                        : AssetImage(Images.posts) as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    Image.network(
+                      displayImage.isNotEmpty && displayImage != "null"
+                          ? displayImage
+                          : Images.posts,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Image.asset(
+                        Images.posts,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    if (isVideo)
+                      Center(
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white.withOpacity(0.8),
+                          size: 60,
+                        ),
+                      ),
+                    Positioned(
+                      top: 8,
+                      left: 8,
                       child: Text(
                         coordinates,
                         style: AppStyle.openSans(
@@ -133,9 +151,13 @@ class Posts extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Image.asset(
-                      thumbIcon,
-                      height: 30,
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Image.asset(
+                        thumbIcon,
+                        height: 30,
+                      ),
                     ),
                   ],
                 ),
@@ -176,20 +198,19 @@ class Posts extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                SizedBox(
-                  width: Get.height * 0.01,
-                ),
+                SizedBox(width: Get.height * 0.01),
                 IconButton(
                   icon: Icon(Icons.share, color: Colors.black),
                   onPressed: () {
                     ShareUtil.sharePost(
-                        postImageUrl: postImage,
-                        userName: userName,
-                        postDescription: postDescription);
+                      postImageUrl: postImage,
+                      userName: userName,
+                      postDescription: postDescription,
+                    );
                   },
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

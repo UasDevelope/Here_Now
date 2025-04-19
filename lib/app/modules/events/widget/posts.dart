@@ -1,15 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/events/model/comment_model.dart';
 import 'package:here_now/app/modules/events/model/event_model.dart';
-import 'package:here_now/app/modules/profile/controller/profile_controller.dart';
 import 'package:intl/intl.dart';
+
 import '../../../utils/share_util.dart';
 import '../../../utils/widgets.dart';
 import '../view/events_detail.dart';
-import 'button.dart';
-import 'map.dart';
 
 class EventPosts extends StatelessWidget {
   bool showMap;
@@ -19,6 +15,11 @@ class EventPosts extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
     final userController = ControllerLocator.profileController;
+    final isVideo = data.image.contains('&thumbnail=');
+    // Extract thumbnail URL if video, else use data.image
+    final displayImage =
+        isVideo ? data.image.split('&thumbnail=')[1] : data.image;
+    final videoUrl = isVideo ? data.image.split('&thumbnail=')[0] : '';
 
     return InkWell(
       onTap: () {
@@ -89,32 +90,47 @@ class EventPosts extends StatelessWidget {
                   Container(
                     height: Get.height / 1.7,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        7,
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(data.image),
-                        fit: BoxFit
-                            .cover, // Ensure the image covers the entire container
-                      ),
+                      borderRadius: BorderRadius.circular(7),
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                        Image.network(
+                          displayImage,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                            Images.posts,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        if (isVideo)
+                          Center(
+                            child: Icon(
+                              Icons.play_arrow,
+                              color: Colors.white.withOpacity(0.8),
+                              size: 60,
+                            ),
+                          ),
+                        Positioned(
+                          top: 8,
+                          left: 8,
                           child: Text(
                             data.location,
                             style: AppStyle.openSans(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800),
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
-                        Image.asset(
-                          Images.thumb,
-                          height: 30,
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Image.asset(
+                            Images.thumb,
+                            height: 30,
+                          ),
                         ),
                       ],
                     ),

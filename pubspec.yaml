@@ -35,6 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   get: ^4.6.6
+  get_thumbnail_video: ^0.7.3
+  chewie: ^1.11.3
+  video_player: ^2.9.5
   image: ^4.5.2
   shared_preferences: ^2.3.5
   jumping_dot: ^0.0.7

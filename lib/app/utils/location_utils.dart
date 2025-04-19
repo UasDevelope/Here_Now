@@ -1,9 +1,7 @@
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:developer' as lg;
 
-import 'package:here_now/app/modules/loading/widget/custom_loading_widget.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:here_now/app/utils/short_message_utils.dart';
 
 class LocationService {
@@ -27,7 +25,7 @@ class LocationService {
       );
       final position = await Geolocator.getCurrentPosition(
         locationSettings: locationSettings,
-      );
+      ).timeout(Duration(seconds: 20));
       // Reverse geocode to get location details
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,

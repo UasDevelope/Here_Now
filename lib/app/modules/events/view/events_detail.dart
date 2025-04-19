@@ -1,17 +1,15 @@
 import 'dart:developer';
-import 'dart:io';
-import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:here_now/app/modules/events/model/comment_model.dart';
 import 'package:here_now/app/modules/events/model/event_model.dart';
 import 'package:intl/intl.dart';
+
 import '../../../utils/share_util.dart';
 import '../../../utils/widgets.dart';
+import '../../video/view/video_player_view.dart';
 import '../widget/button.dart';
 import '../widget/map.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:share_plus/share_plus.dart';
 
 class EventDetailPost extends StatelessWidget {
   bool showMap;
@@ -21,7 +19,11 @@ class EventDetailPost extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = ControllerLocator.eventsController;
     final userController = ControllerLocator.profileController;
-
+    final isVideo = data.image.contains('&thumbnail=');
+    // Extract thumbnail URL if video, else use data.image
+    final displayImage =
+        isVideo ? data.image.split('&thumbnail=')[1] : data.image;
+    final videoUrl = isVideo ? data.image.split('&thumbnail=')[0] : '';
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -109,41 +111,57 @@ class EventDetailPost extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Get.toNamed(Routes.fullScreenImageView,
-                          arguments: data.image);
+                      if (isVideo) {
+                        Get.to(VideoPlayerScreen(url: videoUrl));
+                      } else {
+                        Get.toNamed(Routes.fullScreenImageView,
+                            arguments: data.image);
+                      }
                     },
-                    child: Container(
-                      height: Get.height / 3.6,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          7,
-                        ), // Rounded corners with radius 15
-                        image: DecorationImage(
-                          image: NetworkImage(data.image),
-                          fit: BoxFit
-                              .cover, // Ensure the image covers the entire container
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              data.location,
-                              style: AppStyle.openSans(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w800),
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: Get.height / 3.6,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(7),
+                            image: DecorationImage(
+                              image: NetworkImage(displayImage),
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          Image.asset(
+                          width: double.infinity,
+                        ),
+                        if (isVideo)
+                          Positioned.fill(
+                            child: Center(
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white.withOpacity(0.8),
+                                size: 60,
+                              ),
+                            ),
+                          ),
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Text(
+                            data.location,
+                            style: AppStyle.openSans(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Image.asset(
                             Images.thumb,
                             height: 30,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   if (showMap)
