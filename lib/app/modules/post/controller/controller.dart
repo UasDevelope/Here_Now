@@ -18,27 +18,16 @@ import '../../../utils/string.dart';
 import '../../../utils/textfiled.dart';
 
 class PostController extends GetxController {
-  // Map to associate categories with their respective news types
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contactController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
-  RxString imagePath = "".obs;
+  RxString imagePath = "".obs; // For thumbnail (from image or video)
+  RxString videoPath = "".obs; // For video
   RxString startDate = ''.obs;
   RxString endDate = ''.obs;
   final RxMap<String, List<String>> categoryToNewsType = <String, List<String>>{
     "Events": [],
-    // "Institutes": [
-    //   "City",
-    //   'contiene',
-    //   "State",
-    //   "Nation",
-    //   "World",
-    //   "Recent",
-    //   "Popular",
-    //   "Events",
-    //   "Institutions",
-    // ],
     "News": [
       "City",
       'contiene',
@@ -53,9 +42,10 @@ class PostController extends GetxController {
   }.obs;
 
   RxString imageUrl = "".obs;
+
   void showPostBottomSheet(BuildContext context) {
     if (imagePath.isEmpty) {
-      ShortMessageUtils.showError("Please select an image first");
+      ShortMessageUtils.showError("Please select a thumbnail or video first");
       updateSelectedCategory(selectedCategory.value);
       return;
     }
@@ -69,24 +59,40 @@ class PostController extends GetxController {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image display
+            // Thumbnail display
             InkWell(
-              onTap: () async {
-                await ImageUtils.pickAndUpdateImage(imagePath,
-                    source: ImageSource.camera);
+              onTap: () {
+                showImageSourceDialog(); // Allow changing thumbnail or video
               },
               child: Container(
                 height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: FileImage(File(imagePath.value)),
-                    fit: BoxFit.cover,
-                  ),
+                  image: imagePath.isNotEmpty
+                      ? DecorationImage(
+                          image: FileImage(File(imagePath.value)),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                  color: imagePath.isEmpty ? Colors.grey[300] : null,
                   borderRadius: BorderRadius.circular(8),
                 ),
+                child: imagePath.isEmpty
+                    ? Center(child: Text("Tap to select media"))
+                    : null,
               ),
             ),
+            if (videoPath.isNotEmpty) ...[
+              SizedBox(height: 8),
+              Text(
+                "Video selected",
+                style: AppStyle.openSans(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
             SizedBox(height: 16),
             // Description field
             Text(
@@ -123,11 +129,13 @@ class PostController extends GetxController {
                     return;
                   }
                   if (selectedCategory.value == "News") {
-                    // Get.back();
                     await createNewsPost();
                     Get.back();
-                  } else {}
-                  // Update the UI with the submitted data
+                    Get.back();
+                  } else {
+                    // await createEventPost();
+                    Get.back();
+                  }
                 },
               ),
             ),
@@ -141,72 +149,133 @@ class PostController extends GetxController {
   void showImageSourceDialog() {
     Get.defaultDialog(
       barrierDismissible: false,
-      title: 'Pick an image',
+      title: 'Select Media',
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            leading: Icon(Icons.camera_alt),
-            title: Text(
-              'Use Camera',
-              style: AppStyle.openSans(),
+          if (selectedCategory.value == "News") ...[
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text(
+                'Capture Image',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateImage(imagePath,
+                    source: ImageSource.camera);
+                videoPath.value = ""; // Clear video if image is selected
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
             ),
-            onTap: () async {
-              await ImageUtils.pickAndUpdateImage(imagePath,
-                  source: ImageSource.camera);
-
-              Get.back();
-              if (imagePath.isNotEmpty) {
-                showPostBottomSheet(Get.context!);
-              } else {
-                updateSelectedCategory("Events");
-              }
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.photo_library),
-            title: Text(
-              'Use Gallery',
-              style: AppStyle.openSans(),
+            ListTile(
+              leading: Icon(Icons.videocam),
+              title: Text(
+                'Pick Video',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateVideo(videoPath, imagePath,
+                    source: ImageSource.camera);
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
             ),
-            onTap: () {
-              ImageUtils.pickAndUpdateImage(imagePath,
-                  source: ImageSource.gallery);
-              Get.back();
-              if (imagePath.isNotEmpty) {
-                showPostBottomSheet(Get.context!);
-              } else {
-                updateSelectedCategory("Events");
-              }
-            },
-          ),
+          ] else ...[
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text(
+                'Capture Image',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateImage(imagePath,
+                    source: ImageSource.camera);
+                videoPath.value = ""; // Clear video if image is selected
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text(
+                'Image from Gallery',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateImage(imagePath,
+                    source: ImageSource.gallery);
+                videoPath.value = ""; // Clear video if image is selected
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.videocam),
+              title: Text(
+                'Pick Video',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateVideo(videoPath, imagePath,
+                    source: ImageSource.gallery);
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.videocam),
+              title: Text(
+                'Capture Video',
+                style: AppStyle.openSans(),
+              ),
+              onTap: () async {
+                await ImageUtils.pickAndUpdateVideo(videoPath, imagePath,
+                    source: ImageSource.camera);
+                Get.back();
+                if (imagePath.isNotEmpty) {
+                  showPostBottomSheet(Get.context!);
+                } else {
+                  updateSelectedCategory(selectedCategory.value);
+                }
+              },
+            ),
+          ],
         ],
       ),
     );
   }
 
-  final RxString selectedCategory = "Events".obs; // Default selected category
-  final RxString selectedNews = "".obs; // Default selected news type
+  final RxString selectedCategory = "Events".obs;
+  final RxString selectedNews = "".obs;
 
   List<String> get currentNewsTypeOptions =>
-      categoryToNewsType[selectedCategory.value] ??
-      []; // Get news types for the selected category
+      categoryToNewsType[selectedCategory.value] ?? [];
 
   Future<void> updateSelectedCategory(String value) async {
     log("Value is $value");
-    if (value == "Events") {
-      showImageSourceDialog();
-    } else if (value == "News") {
-      await ImageUtils.pickAndUpdateImage(imagePath,
-          source: ImageSource.camera);
-      if (imagePath.value.isNotEmpty) {
-        showPostBottomSheet(Get.context!);
-      } else {
-        updateSelectedCategory(value);
-      }
-      log("Show bottom sheet ${value} ${imagePath.value}");
-    }
     selectedCategory.value = value;
+    showImageSourceDialog();
   }
 
   void updateSelectedNews(String value) {
@@ -222,13 +291,11 @@ class PostController extends GetxController {
     );
 
     if (pickedDate != null) {
-      // Format the date before returning it
       String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-
-      return formattedDate; // Return the formatted date as a string
+      return formattedDate;
     }
 
-    return null; // Return null if no date was picked
+    return null;
   }
 
   Future<void> createNewsPost() async {
@@ -237,12 +304,13 @@ class PostController extends GetxController {
     CustomLoadingDialog.showCustomLoadingDialog("Creating News Post....");
     Map<String, dynamic> locationName = controller.selectedLocation;
     if (imagePath.isNotEmpty) {
-      imageUrl.value =
-          await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
+      imageUrl.value = await ImageUtils.uploadMediaWithThumbnail(
+          imagePath.value, videoPath.value, "HereNow");
+      log("Image url value is $imageUrl");
     }
     var body = {
       "image": imageUrl.value,
-      "title": titleController.text,
+      "title": "djdjjd",
       "description": descriptionController.text,
       "lat": controller.latitude.value,
       "long": controller.longitude.value,
@@ -250,10 +318,11 @@ class PostController extends GetxController {
       "city": locationName["city"],
       "country": locationName["country"],
       "state": locationName["state"],
-      "video": "videoUrl",
+      // "video": imageUrl.value, // Use combined URL
       "category": selectedCategory.value,
-      "typeNews": "selectedNews.value"
+      "typeNews": "jjd",
     };
+    log("Body data is $body");
     try {
       final response = await ApiClient().post(ApiEndPoints.addNews, body);
       log("Response is $response");
@@ -262,7 +331,6 @@ class PostController extends GetxController {
       clearEvents();
       final bottomNavController = ControllerLocator.bottomNavController;
       bottomNavController.changeIndex(0);
-      // Get.offNamed(Routes.bottomNav);
     } catch (e) {
       CustomLoadingDialog.closeLoadingDialog();
       ShortMessageUtils.showError("$e");
@@ -275,14 +343,15 @@ class PostController extends GetxController {
     CustomLoadingDialog.showCustomLoadingDialog("Creating Event Post....");
     Map<String, dynamic> locationName = controller.selectedLocation;
     if (imagePath.isNotEmpty) {
-      imageUrl.value =
-          await ImageUtils.uploadToCloudinary(imagePath.value, "HereNow");
+      imageUrl.value = await ImageUtils.uploadMediaWithThumbnail(
+          imagePath.value, videoPath.value, "HereNow");
+      log("For event post image url $imageUrl");
     }
     var body = {
       "title": titleController.text,
       "description": descriptionController.text,
       "image": imageUrl.value,
-      "video": "videoUrl",
+      // "video": imageUrl.value, // Use combined URL
       "lat": controller.latitude.value,
       "long": controller.longitude.value,
       "location": locationName["locationName"],
@@ -295,7 +364,6 @@ class PostController extends GetxController {
       "endDate": endDate.value,
     };
     try {
-      // CustomLoadingDialog.showCustomLoadingDialog("Creating post....");
       final response = await ApiClient().post(ApiEndPoints.createEvent, body);
       log("Response is $response");
       CustomLoadingDialog.closeLoadingDialog();
@@ -305,18 +373,9 @@ class PostController extends GetxController {
       bottomNavController.changeIndex(1);
     } catch (e) {
       CustomLoadingDialog.closeLoadingDialog();
-      log("Error$e");
-    } finally {}
+      log("Error is ==> $e");
+    }
   }
-  //
-  // Future<void> createInstituteNews() async {
-  //   var requestBody={};
-  //   try {
-  //     var response=await  ApiClient().post(ApiEndPoints.addNews, requestBody)
-  //   } catch (e) {
-  //
-  //   }
-  // }
 
   void clearEvents() {
     titleController.clear();
@@ -325,5 +384,8 @@ class PostController extends GetxController {
     contactController.clear();
     priceController.clear();
     descriptionController.clear();
+    imagePath.value = "";
+    videoPath.value = "";
+    imageUrl.value = "";
   }
 }
