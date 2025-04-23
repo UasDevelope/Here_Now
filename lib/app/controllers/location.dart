@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:get/get.dart';
-
 import '../utils/location_utils.dart';
 import '../utils/widgets.dart';
 
@@ -14,6 +12,7 @@ class LocationController extends GetxController {
   late GoogleMapController mapController;
 
   Future<void> fetchUserLocation() async {
+    //
     Map<String, dynamic> locationName =
         await LocationService.getCurrentLocation();
     final location = locationName["locationName"];

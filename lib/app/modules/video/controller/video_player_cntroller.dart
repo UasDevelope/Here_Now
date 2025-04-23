@@ -1,42 +1,62 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoController extends GetxController {
-  late VideoPlayerController videoPlayerController;
   ChewieController? chewieController;
+  final String url;
+  var isLoading = true.obs;
 
-  final String videoUrl;
+  VideoController(this.url) {
+    _initializeVideoPlayer();
+  }
 
-  VideoController(this.videoUrl);
-
-  @override
-  void onInit() {
-    super.onInit();
-    videoPlayerController = VideoPlayerController.network(videoUrl)
-      ..initialize().then((_) {
-        chewieController = ChewieController(
-          videoPlayerController: videoPlayerController,
-          autoPlay: true,
-          looping: false,
-          aspectRatio: videoPlayerController!.value.aspectRatio,
-          errorBuilder: (context, errorMessage) {
-            return Center(
-              child: Text(
-                errorMessage,
-                style: const TextStyle(color: Colors.white),
-              ),
-            );
-          },
-        );
-        update(); // Notify UI
-      });
+  Future<void> _initializeVideoPlayer() async {
+    try {
+      final videoPlayerController = VideoPlayerController.network(
+        url,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
+      await videoPlayerController.initialize();
+      chewieController = ChewieController(
+        videoPlayerController: videoPlayerController,
+        autoInitialize: true,
+        showControlsOnInitialize: false,
+        autoPlay: true,
+        aspectRatio: videoPlayerController.value.aspectRatio,
+        allowFullScreen: true,
+        materialProgressColors: ChewieProgressColors(
+          playedColor: Colors.tealAccent,
+          handleColor: Colors.white,
+          backgroundColor: Colors.grey.withOpacity(0.3),
+          bufferedColor: Colors.white54,
+        ),
+        customControls: const MaterialControls(),
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ],
+        errorBuilder: (context, errorMessage) => Center(
+          child: Icon(
+            Icons.error_outline,
+            color: Colors.white.withOpacity(0.7),
+            size: 48,
+          ),
+        ),
+      );
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      update();
+    }
   }
 
   @override
   void onClose() {
-    videoPlayerController.dispose();
+    chewieController?.videoPlayerController.dispose();
     chewieController?.dispose();
     super.onClose();
   }
