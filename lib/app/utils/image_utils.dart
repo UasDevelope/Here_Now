@@ -58,40 +58,74 @@ class ImageUtils {
   static Future<String> uploadToCloudinary(String filePath, String folderName,
       {bool isVideo = false}) async {
     try {
-      const cloudName = 'dh61apvbf';
-      const uploadPreset = 'wbznzo2g';
+      const cloudName = 'dm9e9oujd';
+      const uploadPreset = 'here_now';
 
       final uri = Uri.parse(
-          'https://api.cloudinary.com/v1_1/$cloudName/${isVideo ? 'video' : 'image'}/upload');
+        'https://api.cloudinary.com/v1_1/$cloudName/${isVideo ? 'video' : 'image'}/upload',
+      );
+
       final request = http.MultipartRequest('POST', uri)
         ..fields['upload_preset'] = uploadPreset
         ..fields['folder'] = folderName
         ..files.add(
-          http.MultipartFile(
-            'file',
-            File(filePath).openRead(),
-            await File(filePath).length(),
-            filename: isVideo ? 'video.mp4' : 'image.jpg',
-          ),
+          await http.MultipartFile.fromPath('file', filePath),
         );
 
       final response = await request.send();
-      if (response.statusCode == 200) {
-        final responseData = await response.stream.bytesToString();
-        final decodedData = json.decode(responseData);
-        print('Upload successful: ${decodedData['secure_url']}');
+      final responseBody = await response.stream.bytesToString();
 
+      if (response.statusCode == 200) {
+        final decodedData = json.decode(responseBody);
+        print('✅ Upload successful: ${decodedData['secure_url']}');
         return decodedData['secure_url'];
       } else {
-        print(
-            'Failed to upload ${isVideo ? 'video' : 'image'}: ${response.statusCode}');
-        throw Exception('Failed to upload ${isVideo ? 'video' : 'image'}');
+        print('❌ Upload failed [${response.statusCode}]: $responseBody');
+        throw Exception('Cloudinary upload error: $responseBody');
       }
-    } catch (error) {
-      print('Error uploading ${isVideo ? 'video' : 'image'}: $error');
+    } catch (e) {
+      print('⚠️ Upload exception: $e');
       rethrow;
     }
   }
+
+  // static Future<String> uploadToCloudinary(String filePath, String folderName,
+  //     {bool isVideo = false}) async {
+  //   try {
+  //     const cloudName = 'dm9e9oujd';
+  //     const uploadPreset = 'here_now';
+  //
+  //     final uri = Uri.parse(
+  //         'https://api.cloudinary.com/v1_1/$cloudName/${isVideo ? 'video' : 'image'}/upload');
+  //     final request = http.MultipartRequest('POST', uri)
+  //       ..fields['upload_preset'] = uploadPreset
+  //       ..fields['folder'] = folderName
+  //       ..files.add(
+  //         http.MultipartFile(
+  //           'file',
+  //           File(filePath).openRead(),
+  //           await File(filePath).length(),
+  //           filename: isVideo ? 'video.mp4' : 'image.jpg',
+  //         ),
+  //       );
+  //
+  //     final response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       final responseData = await response.stream.bytesToString();
+  //       final decodedData = json.decode(responseData);
+  //       print('Upload successful: ${decodedData['secure_url']}');
+  //
+  //       return decodedData['secure_url'];
+  //     } else {
+  //       print(
+  //           'Failed to upload ${isVideo ? 'video' : 'image'}: ${response.statusCode}');
+  //       throw Exception('Failed to upload ${isVideo ? 'video' : 'image'}');
+  //     }
+  //   } catch (error) {
+  //     print('Error uploading ${isVideo ? 'video' : 'image'}: $error');
+  //     rethrow;
+  //   }
+  // }
 
   // Upload thumbnail and video, combine URLs
   static Future<String> uploadMediaWithThumbnail(

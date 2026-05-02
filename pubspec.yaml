@@ -38,14 +38,18 @@ dependencies:
   get_thumbnail_video: ^0.7.3
   chewie: ^1.11.3
   video_player: ^2.9.5
+  cached_video_player_plus: ^3.0.3
   image: ^4.5.2
+  better_player_plus: ^1.0.2
   shared_preferences: ^2.3.5
+  flick_video_player: ^0.9.0
   jumping_dot: ^0.0.7
   shimmer: ^3.0.0
   photo_view: ^0.15.0
   share_plus: ^10.1.4
+  flutter_cache_manager: ^3.4.1
   google_fonts: ^6.2.1
-  intl: ^0.20.1
+#  intl: ^0.20.
   path_provider: ^2.1.5
   geolocator: ^13.0.2
   geocoding: ^3.0.0

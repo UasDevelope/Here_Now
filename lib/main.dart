@@ -7,8 +7,6 @@ import 'package:here_now/app/pages/pages.dart';
 import 'package:here_now/app/routes/routes.dart';
 import 'package:here_now/app/utils/pref_util.dart';
 
-import 'app/utils/images.dart';
-
 final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
 void main() async {

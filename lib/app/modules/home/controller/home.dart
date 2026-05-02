@@ -14,6 +14,13 @@ import '../model/news_comment_model.dart';
 
 class HomeController extends GetxController {
   Rx<GoogleMapController?> googleMapController = Rx<GoogleMapController?>(null);
+  @override
+  void onInit() {
+    fetchNews();
+
+    // TODO: implement onInit
+    super.onInit();
+  }
 
   var markers = <Marker>{}.obs;
   final locationController = ControllerLocator.locationController;

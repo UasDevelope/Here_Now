@@ -11,8 +11,8 @@ import '../../events/widget/map.dart';
 class InstitutePosts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final controller = ControllerLocator.eventsController;
-    final userController = ControllerLocator.profileController;
+    // final controller = ControllerLocator.eventsController;
+    // final userController = ControllerLocator.profileController;
     return Container(
       padding: EdgeInsets.all(8), // Add some padding for better UI
       child: SingleChildScrollView(

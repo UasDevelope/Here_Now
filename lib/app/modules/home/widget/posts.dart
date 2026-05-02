@@ -58,7 +58,7 @@ class Posts extends StatelessWidget {
                   radius: 20,
                   backgroundImage: userAvatar.contains("https")
                       ? NetworkImage(userAvatar)
-                      : AssetImage(userAvatar) as ImageProvider,
+                      : AssetImage(Images.person) as ImageProvider,
                 ),
                 const SizedBox(width: 10),
                 Padding(
@@ -106,7 +106,10 @@ class Posts extends StatelessWidget {
               onTap: () {
                 if (isVideo) {
                   log("user clicked video $videoUrl");
-                  Get.to(VideoPlayerScreen(url: videoUrl));
+                  Get.to(VideoPlayerScreen(
+                    url: videoUrl,
+                    title: postDescription,
+                  ));
                 } else {
                   log("Post Image is $postImage");
                   Get.toNamed(Routes.fullScreenImageView,

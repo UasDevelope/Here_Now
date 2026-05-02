@@ -14,13 +14,10 @@ import '../widget/map_shimmer.dart';
 import 'map.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final homeController = ControllerLocator.homeController;
     final controller = ControllerLocator.eventsController;
-    homeController.fetchNews();
     return SafeArea(
       child: Scaffold(
         body: RefreshIndicator(
@@ -67,7 +64,6 @@ class HomeScreen extends StatelessWidget {
                                             style: TextStyle(color: Colors.red),
                                           );
                                         }
-
                                         return EventPosts(
                                           showMap: true,
                                           data: data,
